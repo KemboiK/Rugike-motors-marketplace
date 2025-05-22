@@ -28,6 +28,7 @@ __pycache__/
 *.pyc
 db.sqlite3
 .env
+env/
 backend/static/
 backend/media/
 backend/venv/
