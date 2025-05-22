@@ -1,4 +1,4 @@
-
+import { useEffect, useState } from "react";
 import AdminNavigation from "@/components/AdminNavigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -6,63 +6,53 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Customers = () => {
+  const [customers, setCustomers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  
-  // Sample data - in a real app, this would come from a database
-  const customers = [
-    {
-      id: 1,
-      name: "Alice Johnson",
-      email: "alice.johnson@example.com",
-      inquiries: 5,
-      status: "active",
-      joinDate: "2025-02-10"
-    },
-    {
-      id: 2,
-      name: "Bob Wilson",
-      email: "bob.wilson@example.com",
-      inquiries: 2,
-      status: "active",
-      joinDate: "2025-03-15"
-    },
-    {
-      id: 3,
-      name: "Carol Martinez",
-      email: "carol.m@example.com",
-      inquiries: 8,
-      status: "active",
-      joinDate: "2025-01-22"
-    },
-    {
-      id: 4,
-      name: "David Thompson",
-      email: "david.t@example.com",
-      inquiries: 0,
-      status: "inactive",
-      joinDate: "2025-04-05"
-    },
-    {
-      id: 5,
-      name: "Eva Green",
-      email: "eva.green@example.com",
-      inquiries: 3,
-      status: "active",
-      joinDate: "2025-03-28"
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    setLoading(true);
+    fetch("/api/admin/customers/")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch customers");
+        return res.json();
+      })
+      .then((data) => {
+        setCustomers(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  const updateCustomerStatus = async (id, action) => {
+    try {
+      const res = await fetch(`/api/admin/customers/${id}/${action}/`, {
+        method: "POST",
+      });
+      if (!res.ok) throw new Error(`Failed to ${action} customer`);
+      setCustomers((prev) =>
+        prev.map((c) =>
+          c.id === id ? { ...c, status: action === "activate" ? "active" : "inactive" } : c
+        )
+      );
+    } catch (err) {
+      alert(err.message);
     }
-  ];
-  
-  // Filter customers based on search
-  const filteredCustomers = customers.filter(customer => 
-    customer.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+  };
+
+  const filteredCustomers = customers.filter((customer) =>
+    customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     customer.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
-  const getStatusBadge = (status: string) => {
+
+  const getStatusBadge = (status) => {
     switch (status) {
       case "active":
         return <Badge className="bg-green-500">Active</Badge>;
@@ -73,18 +63,18 @@ const Customers = () => {
     }
   };
 
-  const getInitials = (name: string) => {
+  const getInitials = (name) => {
     return name
-      .split(' ')
-      .map(part => part[0])
-      .join('')
+      .split(" ")
+      .map((part) => part[0])
+      .join("")
       .toUpperCase();
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminNavigation />
-      
+
       <main className="container-custom py-8">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-rugike-primary">Customer Management</h1>
@@ -94,8 +84,7 @@ const Customers = () => {
             </Button>
           </div>
         </div>
-        
-        {/* Filters */}
+
         <div className="mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -107,7 +96,10 @@ const Customers = () => {
             />
           </div>
         </div>
-        
+
+        {loading && <p>Loading customers...</p>}
+        {error && <p className="text-red-500">{error}</p>}
+
         <Card>
           <CardHeader>
             <CardTitle>Customers ({filteredCustomers.length})</CardTitle>
@@ -138,17 +130,29 @@ const Customers = () => {
                       </div>
                     </TableCell>
                     <TableCell>{customer.inquiries}</TableCell>
-                    <TableCell>
-                      {getStatusBadge(customer.status)}
-                    </TableCell>
-                    <TableCell>{customer.joinDate}</TableCell>
+                    <TableCell>{getStatusBadge(customer.status)}</TableCell>
+                    <TableCell>{customer.join_date || customer.joinDate}</TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
-                        <Button variant="outline" size="sm">View</Button>
+                        <Button variant="outline" size="sm">
+                          View
+                        </Button>
                         {customer.status === "active" ? (
-                          <Button variant="destructive" size="sm">Deactivate</Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => updateCustomerStatus(customer.id, "deactivate")}
+                          >
+                            Deactivate
+                          </Button>
                         ) : (
-                          <Button className="bg-green-600 hover:bg-green-700" size="sm">Activate</Button>
+                          <Button
+                            className="bg-green-600 hover:bg-green-700"
+                            size="sm"
+                            onClick={() => updateCustomerStatus(customer.id, "activate")}
+                          >
+                            Activate
+                          </Button>
                         )}
                       </div>
                     </TableCell>

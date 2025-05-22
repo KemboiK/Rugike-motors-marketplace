@@ -1,4 +1,3 @@
-
 import AdminNavigation from "@/components/AdminNavigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -7,64 +6,59 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+interface Car {
+  id: number;
+  name: string;
+  seller: string;
+  price: string;
+  status: string;
+  date: string;
+}
 
 const Cars = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  
-  // Sample data - in a real app, this would come from a database
-  const allCars = [
-    {
-      id: 1,
-      name: "BMW X5 2023",
-      seller: "John Doe",
-      price: "$45,000",
-      status: "approved",
-      date: "2025-04-10"
-    },
-    {
-      id: 2,
-      name: "Mercedes E-Class 2022",
-      seller: "Jane Smith",
-      price: "$38,900",
-      status: "pending",
-      date: "2025-05-11"
-    },
-    {
-      id: 3,
-      name: "Audi Q7 2024",
-      seller: "Mike Johnson",
-      price: "$52,500",
-      status: "pending",
-      date: "2025-05-12"
-    },
-    {
-      id: 4,
-      name: "Toyota Camry 2023",
-      seller: "Sarah Williams",
-      price: "$27,800",
-      status: "approved",
-      date: "2025-04-25"
-    },
-    {
-      id: 5,
-      name: "Honda Civic 2024",
-      seller: "David Brown",
-      price: "$24,500",
-      status: "rejected",
-      date: "2025-05-05"
-    }
-  ];
-  
+  const [allCars, setAllCars] = useState<Car[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch("http://localhost:8000/api/cars/") // Replace with your actual API URL
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch cars");
+        return res.json();
+      })
+      .then((data) => {
+        // Adapt data mapping if backend fields differ
+        const carsData = data.map((car: any) => ({
+          id: car.id,
+          name: car.name,
+          seller: car.seller_name || car.seller,  // adjust to your API response
+          price: car.price,
+          status: car.status,
+          date: new Date(car.created_at).toISOString().split("T")[0], // format to YYYY-MM-DD
+        }));
+        setAllCars(carsData);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
   // Filter cars based on search and status
-  const filteredCars = allCars.filter(car => {
-    const matchesSearch = car.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         car.seller.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredCars = allCars.filter((car) => {
+    const matchesSearch =
+      car.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      car.seller.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || car.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
-  
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "approved":
@@ -81,7 +75,7 @@ const Cars = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminNavigation />
-      
+
       <main className="container-custom py-8">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-rugike-primary">Car Management</h1>
@@ -91,7 +85,7 @@ const Cars = () => {
             </Button>
           </div>
         </div>
-        
+
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="relative flex-1">
@@ -115,50 +109,59 @@ const Cars = () => {
             </SelectContent>
           </Select>
         </div>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>Cars ({filteredCars.length})</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Car</TableHead>
-                  <TableHead>Seller</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Action</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredCars.map((car) => (
-                  <TableRow key={car.id}>
-                    <TableCell className="font-medium">{car.name}</TableCell>
-                    <TableCell>{car.seller}</TableCell>
-                    <TableCell>{car.price}</TableCell>
-                    <TableCell>
-                      {getStatusBadge(car.status)}
-                    </TableCell>
-                    <TableCell>{car.date}</TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <Button variant="outline" size="sm">View</Button>
-                        {car.status === "pending" && (
-                          <>
-                            <Button className="bg-green-600 hover:bg-green-700" size="sm">Approve</Button>
-                            <Button variant="destructive" size="sm">Reject</Button>
-                          </>
-                        )}
-                      </div>
-                    </TableCell>
+
+        {loading && <p>Loading cars...</p>}
+        {error && <p className="text-red-600">Error: {error}</p>}
+
+        {!loading && !error && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Cars ({filteredCars.length})</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Car</TableHead>
+                    <TableHead>Seller</TableHead>
+                    <TableHead>Price</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Action</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+                </TableHeader>
+                <TableBody>
+                  {filteredCars.map((car) => (
+                    <TableRow key={car.id}>
+                      <TableCell className="font-medium">{car.name}</TableCell>
+                      <TableCell>{car.seller}</TableCell>
+                      <TableCell>{car.price}</TableCell>
+                      <TableCell>{getStatusBadge(car.status)}</TableCell>
+                      <TableCell>{car.date}</TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          <Button variant="outline" size="sm">
+                            View
+                          </Button>
+                          {car.status === "pending" && (
+                            <>
+                              <Button className="bg-green-600 hover:bg-green-700" size="sm">
+                                Approve
+                              </Button>
+                              <Button variant="destructive" size="sm">
+                                Reject
+                              </Button>
+                            </>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
       </main>
     </div>
   );
