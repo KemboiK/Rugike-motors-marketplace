@@ -1,6 +1,3 @@
-from django.shortcuts import render
-
-# Create your views here.
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -20,3 +17,47 @@ def car_list_create(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def car_detail(request, pk):
+    try:
+        car = Car.objects.get(pk=pk)
+    except Car.DoesNotExist:
+        return Response({'error': 'Car not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = CarSerializer(car)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = CarSerializer(car, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        car.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['POST'])
+def approve_car(request, pk):
+    try:
+        car = Car.objects.get(pk=pk)
+    except Car.DoesNotExist:
+        return Response({'error': 'Car not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    car.status = 'approved'
+    car.save()
+    return Response({'status': 'car approved'}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def reject_car(request, pk):
+    try:
+        car = Car.objects.get(pk=pk)
+    except Car.DoesNotExist:
+        return Response({'error': 'Car not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    car.status = 'rejected'
+    car.save()
+    return Response({'status': 'car rejected'}, status=status.HTTP_200_OK)

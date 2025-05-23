@@ -1,7 +1,5 @@
 from django.db import models
 
-# Create your models here.
-
 class Customer(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
@@ -12,3 +10,12 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Inquiry(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='inquiries')
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Inquiry by {self.customer.name} on {self.created_at.date()}"

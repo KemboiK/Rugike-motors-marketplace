@@ -1,18 +1,18 @@
 from django.db import models
-
-# Create your models here.
-from sellers.models import Seller  
+from sellers.models import Seller
 
 class Car(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE, related_name='cars')
-    make = models.CharField(max_length=100)
-    model = models.CharField(max_length=100)
-    year = models.PositiveIntegerField()
+    name = models.CharField(max_length=255)  # Combined make + model + year as needed
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    mileage = models.PositiveIntegerField()
-    description = models.TextField(blank=True)
-    is_available = models.BooleanField(default=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.make} {self.model} ({self.year})"
+        return self.name
