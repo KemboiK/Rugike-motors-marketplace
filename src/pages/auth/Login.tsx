@@ -15,37 +15,38 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("customer");
 
-const handleLogin = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  if (!username || !password) {
-    toast.error("Please enter both username and password");
-    return;
-  }
-
-  try {
-    const response = await fetch("http://127.0.0.1:8000/api/token/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      localStorage.setItem("accessToken", data.access);
-      localStorage.setItem("refreshToken", data.refresh);
-      toast.success(`${role} login successful`);
-      localStorage.setItem("userRole", role); // You can infer role from backend if needed
-      navigate(`/${role}/dashboard`);
-    } else {
-      toast.error("Invalid credentials");
+    if (!username || !password) {
+      toast.error("Please enter both username and password");
+      return;
     }
-  } catch (error) {
-    console.error("Login error", error);
-    toast.error("Login failed");
-  }
-};
 
+    console.log("Submitting login", { username, password, role });
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/token/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("accessToken", data.access);
+        localStorage.setItem("refreshToken", data.refresh);
+        toast.success(`${role} login successful`);
+        localStorage.setItem("userRole", role);
+        navigate(`/${role}/dashboard`);
+      } else {
+        toast.error("Invalid credentials");
+      }
+    } catch (error) {
+      console.error("Login error", error);
+      toast.error("Login failed");
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rugike-primary to-rugike-dark p-4">
@@ -56,6 +57,7 @@ const handleLogin = async (e: React.FormEvent) => {
           </CardTitle>
           <CardDescription>Login to access your account</CardDescription>
         </CardHeader>
+
         <CardContent>
           <Tabs defaultValue="customer" onValueChange={setRole}>
             <TabsList className="grid grid-cols-3 mb-6">
@@ -72,60 +74,58 @@ const handleLogin = async (e: React.FormEvent) => {
                 Admin
               </TabsTrigger>
             </TabsList>
-            
-            <form onSubmit={handleLogin}>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="username">Username</Label>
-                  <Input
-                    id="username"
-                    placeholder="Enter your username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                
-                <TabsContent value="customer">
-                  <p className="text-sm text-muted-foreground mb-4">
-                    As a customer, explore our premium car marketplace and find your dream car.
-                  </p>
-                </TabsContent>
-                
-                <TabsContent value="seller">
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Login as a seller to list your cars and manage your inventory.
-                    <br /><br />
-                    <span className="font-semibold">Demo credentials:</span><br />
-                    Username: seller<br />
-                    Password: seller123
-                  </p>
-                </TabsContent>
-                
-                <TabsContent value="admin">
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Admin access is restricted. Use your admin credentials to login.
-                    <br /><br />
-                    <span className="font-semibold">Demo credentials:</span><br />
-                    Username: admin<br />
-                    Password: admin123
-                  </p>
-                </TabsContent>
-              </div>
-              
-              <Button type="submit" className="w-full mt-6">Login</Button>
-            </form>
+
+            <TabsContent value="customer">
+              <p className="text-sm text-muted-foreground mb-4">
+                As a customer, explore our premium car marketplace and find your dream car.
+              </p>
+            </TabsContent>
+
+            <TabsContent value="seller">
+              <p className="text-sm text-muted-foreground mb-4">
+                Login as a seller to list your cars and manage your inventory.
+                <br /><br />
+                <span className="font-semibold">Demo credentials:</span><br />
+                Username: seller<br />
+                Password: seller123
+              </p>
+            </TabsContent>
+
+            <TabsContent value="admin">
+              <p className="text-sm text-muted-foreground mb-4">
+                Admin access is restricted. Use your admin credentials to login.
+                <br /><br />
+                <span className="font-semibold">Demo credentials:</span><br />
+                Username: admin<br />
+                Password: admin123
+              </p>
+            </TabsContent>
           </Tabs>
+
+          <form onSubmit={handleLogin} className="mt-4 space-y-4">
+            <div>
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                placeholder="Enter your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <Button type="submit" className="w-full mt-6">Login</Button>
+          </form>
         </CardContent>
+
         <CardFooter className="flex justify-center">
           <Button variant="link" onClick={() => navigate("/")} className="text-sm">
             Return to Homepage
