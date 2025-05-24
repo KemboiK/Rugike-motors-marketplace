@@ -17,7 +17,7 @@ const Sellers = () => {
   // Fetch sellers from backend
   useEffect(() => {
     setLoading(true);
-    fetch("/api/sellers/")
+    fetch("http://localhost:8000/api/sellers/sellers/")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch sellers");
         return res.json();
@@ -35,7 +35,7 @@ const Sellers = () => {
   // Update seller status helper
   const updateSellerStatus = async (id, action) => {
     try {
-      const res = await fetch(`/api/sellers/${id}/${action}/`, {
+      const res = await fetch(`http://localhost:8000/api/sellers/${id}/${action}/`, {
         method: "POST",
       });
       if (!res.ok) throw new Error(`Failed to ${action} seller`);

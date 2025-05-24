@@ -3,6 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Car
 from .serializers import CarSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
 
 @api_view(['GET', 'POST'])
 def car_list_create(request):
@@ -71,3 +73,14 @@ def reject_car(request, pk):
     car.status = 'rejected'
     car.save()
     return Response({'status': 'car rejected'}, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def my_cars(request):
+    if not hasattr(request.user, 'seller'):
+        return Response({'error': 'Only sellers can view their cars'}, status=status.HTTP_403_FORBIDDEN)
+
+    seller = request.user.seller
+    cars = Car.objects.filter(seller=seller)
+    serializer = CarSerializer(cars, many=True)
+    return Response(serializer.data)

@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SellerNavigation from "@/components/SellerNavigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -11,62 +10,35 @@ import { Edit, Trash2, Eye } from "lucide-react";
 import Chatbot from "@/components/Chatbot";
 
 const MyCars = () => {
+  const [cars, setCars] = useState([]);
   const [selectedCar, setSelectedCar] = useState<any>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  
-  // Sample data - in a real app, this would come from a database
-  const myCars = [
-    {
-      id: 1,
-      name: "Toyota Camry 2022",
-      price: "$28,500",
-      status: "approved",
-      views: 45,
-      inquiries: 3,
-      date: "2025-04-15",
-      image: "https://source.unsplash.com/random/800x600/?toyota,camry"
-    },
-    {
-      id: 2,
-      name: "Honda Civic 2023",
-      price: "$22,900",
-      status: "pending",
-      views: 12,
-      inquiries: 0,
-      date: "2025-05-10",
-      image: "https://source.unsplash.com/random/800x600/?honda,civic"
-    },
-    {
-      id: 3,
-      name: "Ford Mustang 2021",
-      price: "$38,700",
-      status: "approved",
-      views: 87,
-      inquiries: 6,
-      date: "2025-03-22",
-      image: "https://source.unsplash.com/random/800x600/?ford,mustang"
-    },
-    {
-      id: 4,
-      name: "Tesla Model 3 2022",
-      price: "$42,900",
-      status: "approved",
-      views: 102,
-      inquiries: 9,
-      date: "2025-04-05",
-      image: "https://source.unsplash.com/random/800x600/?tesla,model3"
-    },
-    {
-      id: 5,
-      name: "BMW X5 2023",
-      price: "$62,500",
-      status: "pending",
-      views: 32,
-      inquiries: 2,
-      date: "2025-05-12",
-      image: "https://source.unsplash.com/random/800x600/?bmw,x5"
-    }
-  ];
+
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://127.0.0.1:8000/api/cars/my/", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch cars");
+        }
+
+        const data = await response.json();
+        setCars(data);
+      } catch (error) {
+        console.error("Error fetching cars:", error);
+        toast.error("Failed to load your cars.");
+      }
+    };
+
+    fetchCars();
+  }, []);
 
   const handleDelete = () => {
     toast.success(`${selectedCar.name} has been removed from your listings`);
@@ -81,13 +53,13 @@ const MyCars = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <SellerNavigation />
-      
+
       <main className="container-custom py-8">
         <h1 className="text-3xl font-bold text-rugike-primary mb-8">My Car Listings</h1>
-        
+
         <Card>
           <CardHeader>
-            <CardTitle>All My Listings ({myCars.length})</CardTitle>
+            <CardTitle>All My Listings ({cars.length})</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
@@ -104,7 +76,7 @@ const MyCars = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {myCars.map((car) => (
+                  {cars.map((car: any) => (
                     <TableRow key={car.id}>
                       <TableCell>
                         <div className="flex items-center gap-3">
@@ -131,9 +103,9 @@ const MyCars = () => {
                           <Button variant="outline" size="icon">
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button 
-                            variant="destructive" 
-                            size="icon" 
+                          <Button
+                            variant="destructive"
+                            size="icon"
                             onClick={() => {
                               setSelectedCar(car);
                               setDeleteDialogOpen(true);
@@ -170,7 +142,7 @@ const MyCars = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      
+
       <Chatbot variant="seller" />
     </div>
   );

@@ -15,41 +15,37 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("customer");
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Simple validation
-    if (!username || !password) {
-      toast.error("Please enter both username and password");
-      return;
-    }
-    
-    // Simple role-based authentication
-    if (role === "admin") {
-      // In a real app, you would verify credentials against a database
-      if (username === "admin" && password === "admin123") {
-        toast.success("Admin login successful");
-        navigate("/admin/dashboard");
-        localStorage.setItem("userRole", "admin");
-      } else {
-        toast.error("Invalid admin credentials");
-      }
-    } else if (role === "seller") {
-      // For demo purposes, any seller can login with "seller" and "seller123"
-      if (username === "seller" && password === "seller123") {
-        toast.success("Seller login successful");
-        navigate("/seller/dashboard");
-        localStorage.setItem("userRole", "seller");
-      } else {
-        toast.error("Invalid seller credentials");
-      }
+const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (!username || !password) {
+    toast.error("Please enter both username and password");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/token/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem("accessToken", data.access);
+      localStorage.setItem("refreshToken", data.refresh);
+      toast.success(`${role} login successful`);
+      localStorage.setItem("userRole", role); // You can infer role from backend if needed
+      navigate(`/${role}/dashboard`);
     } else {
-      // Customer doesn't need authentication in this demo
-      toast.success("Welcome to RUGIKE Motors!");
-      navigate("/");
-      localStorage.setItem("userRole", "customer");
+      toast.error("Invalid credentials");
     }
-  };
+  } catch (error) {
+    console.error("Login error", error);
+    toast.error("Login failed");
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rugike-primary to-rugike-dark p-4">
