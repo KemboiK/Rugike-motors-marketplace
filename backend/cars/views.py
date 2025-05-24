@@ -12,11 +12,21 @@ def car_list_create(request):
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        serializer = CarSerializer(data=request.data)
+        data = request.data.copy()
+
+        # Automatically assign the logged-in seller
+        if not hasattr(request.user, 'seller'):
+            return Response({'error': 'Only sellers can add cars'}, status=status.HTTP_403_FORBIDDEN)
+
+        data['seller'] = request.user.seller.id
+        data['status'] = 'pending'  # force it to always be pending on creation
+
+        serializer = CarSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def car_detail(request, pk):

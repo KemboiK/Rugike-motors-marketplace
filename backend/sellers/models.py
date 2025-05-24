@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Seller(models.Model):
     STATUS_CHOICES = [
@@ -7,6 +8,7 @@ class Seller(models.Model):
         ('inactive', 'Inactive'),
     ]
 
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='seller')
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     company = models.CharField(max_length=255)
