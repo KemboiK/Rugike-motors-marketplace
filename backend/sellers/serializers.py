@@ -11,7 +11,8 @@ class SellerCreateSerializer(serializers.Serializer):
     username = serializers.CharField()
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
-    company_name = serializers.CharField(required=False)
+    name = serializers.CharField()  # add this
+    company = serializers.CharField(required=False)  # rename to match model
 
     def validate_username(self, value):
         if User.objects.filter(username=value).exists():
@@ -32,7 +33,10 @@ class SellerCreateSerializer(serializers.Serializer):
         )
         seller = Seller.objects.create(
             user=user,
-            company=validated_data.get("company_name", ""),
+            name=validated_data['name'],  # set name here
+            email=validated_data['email'],  # set email here
+            company=validated_data.get("company", ""),
             status="pending"
         )
         return seller
+

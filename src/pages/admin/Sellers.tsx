@@ -40,8 +40,13 @@ const Sellers = () => {
 
   const updateSellerStatus = async (id, action) => {
     try {
+      const token = localStorage.getItem("accessToken");
       const res = await fetch(`http://localhost:8000/api/sellers/${id}/${action}/`, {
         method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
       });
       if (!res.ok) throw new Error(`Failed to ${action} seller`);
       setSellers((prev) =>
@@ -49,8 +54,10 @@ const Sellers = () => {
           s.id === id ? { ...s, status: action === "approve" || action === "activate" ? "active" : "inactive" } : s
         )
       );
+
+      toast.success(`Seller ${action === "approve" ? "approved" : action + "d"} successfully!`);
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message || `Failed to ${action} seller`);
     }
   };
 
@@ -196,8 +203,13 @@ const Sellers = () => {
                 e.preventDefault();
                 const form = e.target as HTMLFormElement;
                 const formData = new FormData(form);
-                const data = Object.fromEntries(formData.entries());
-
+                const data = {
+                  username: formData.get("username"),
+                  email: formData.get("email"),
+                  password: formData.get("password"),
+                  name: formData.get("name"), 
+                  company: formData.get("company"), 
+                };
                 try {
                   const token = localStorage.getItem("accessToken");
                   const res = await fetch("http://localhost:8000/api/sellers/add/", {
@@ -225,10 +237,11 @@ const Sellers = () => {
               }}
               className="space-y-4"
             >
+              <Input name="name" placeholder="Full Name" required />
               <Input name="username" placeholder="Username" required />
               <Input name="email" type="email" placeholder="Email" required />
               <Input name="password" type="password" placeholder="Password" required />
-              <Input name="company_name" placeholder="Company Name" />
+              <Input name="company" placeholder="Company Name" />
               <div className="flex justify-end space-x-2">
                 <Button type="button" variant="ghost" onClick={() => setShowAddForm(false)}>
                   Cancel
