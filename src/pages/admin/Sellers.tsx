@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import AdminNavigation from "@/components/AdminNavigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,9 +14,10 @@ const Sellers = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showAddForm, setShowAddForm] = useState(false);
 
   // Fetch sellers from backend
-  useEffect(() => {
+  const fetchSellers = () => {
     setLoading(true);
     fetch("http://localhost:8000/api/sellers/sellers/")
       .then((res) => {
@@ -30,16 +32,18 @@ const Sellers = () => {
         setError(err.message);
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetchSellers();
   }, []);
 
-  // Update seller status helper
   const updateSellerStatus = async (id, action) => {
     try {
       const res = await fetch(`http://localhost:8000/api/sellers/${id}/${action}/`, {
         method: "POST",
       });
       if (!res.ok) throw new Error(`Failed to ${action} seller`);
-      // Update local state on success
       setSellers((prev) =>
         prev.map((s) =>
           s.id === id ? { ...s, status: action === "approve" || action === "activate" ? "active" : "inactive" } : s
@@ -50,7 +54,6 @@ const Sellers = () => {
     }
   };
 
-  // Filter sellers
   const filteredSellers = sellers.filter(
     (seller) =>
       seller.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -86,7 +89,7 @@ const Sellers = () => {
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-rugike-primary">Seller Management</h1>
           <div className="mt-4 md:mt-0">
-            <Button className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90">
+            <Button className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90" onClick={() => setShowAddForm(true)}>
               Add New Seller
             </Button>
           </div>
@@ -156,7 +159,11 @@ const Sellers = () => {
                           </Button>
                         )}
                         {seller.status === "active" && (
-                          <Button variant="destructive" size="sm" onClick={() => updateSellerStatus(seller.id, "deactivate")}>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => updateSellerStatus(seller.id, "deactivate")}
+                          >
                             Deactivate
                           </Button>
                         )}
@@ -178,6 +185,62 @@ const Sellers = () => {
           </CardContent>
         </Card>
       </main>
+
+      {/* Modal for Add Seller Form */}
+      {showAddForm && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-lg">
+            <h2 className="text-xl font-semibold mb-4">Add New Seller</h2>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const form = e.target as HTMLFormElement;
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+
+                try {
+                  const token = localStorage.getItem("accessToken");
+                  const res = await fetch("http://localhost:8000/api/sellers/add/", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(data),
+                  });
+
+                  if (!res.ok) {
+                    const errData = await res.json();
+                    toast.error(errData.error || "Failed to add seller");
+                    return;
+                  }
+
+                  toast.success("Seller added successfully!");
+                  form.reset();
+                  setShowAddForm(false);
+                  fetchSellers(); // Refresh list
+                } catch (err: any) {
+                  toast.error(err.message || "Something went wrong");
+                }
+              }}
+              className="space-y-4"
+            >
+              <Input name="username" placeholder="Username" required />
+              <Input name="email" type="email" placeholder="Email" required />
+              <Input name="password" type="password" placeholder="Password" required />
+              <Input name="company_name" placeholder="Company Name" />
+              <div className="flex justify-end space-x-2">
+                <Button type="button" variant="ghost" onClick={() => setShowAddForm(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit" className="bg-rugike-accent text-white">
+                  Add Seller
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

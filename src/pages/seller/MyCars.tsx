@@ -16,24 +16,36 @@ const MyCars = () => {
 
   useEffect(() => {
     const fetchCars = async () => {
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        toast.error("No access token found. Please log in again.");
+        return;
+      }
+
       try {
-        const token = localStorage.getItem("accessToken");
         const response = await fetch("http://127.0.0.1:8000/api/cars/my/", {
+          method: "GET",
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
           },
         });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch cars");
+          if (response.status === 401) {
+            toast.error("Unauthorized. Please log in again.");
+          } else {
+            toast.error("Failed to fetch cars.");
+          }
+          return;
         }
 
         const data = await response.json();
         setCars(data);
       } catch (error) {
         console.error("Error fetching cars:", error);
-        toast.error("Failed to load your cars.");
+        toast.error("Network error while fetching your cars.");
       }
     };
 
