@@ -55,6 +55,31 @@ const Customers = () => {
       .toUpperCase();
   };
 
+  const handleExport = async () => {
+  try {
+    const token = localStorage.getItem('accessToken'); 
+    const response = await fetch('http://localhost:8000/api/customers/export_pdf/', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) throw new Error('Failed to fetch PDF');
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'customer_list.pdf'; // filename for the download
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    alert(error.message);
+  }
+};
+
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminNavigation />
@@ -63,7 +88,8 @@ const Customers = () => {
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-rugike-primary">Customer Management</h1>
           <div className="mt-4 md:mt-0">
-            <Button className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90">
+            <Button className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90"
+            onClick={handleExport}>
               Export Customer Data
             </Button>
           </div>

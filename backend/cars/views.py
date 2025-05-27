@@ -3,6 +3,9 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
 from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.pdfgen import canvas
 from django.http import HttpResponse
 from .models import Car
@@ -94,33 +97,31 @@ def download_car_list_pdf(request):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="car_list.pdf"'
 
-    p = canvas.Canvas(response, pagesize=letter)
-    width, height = letter
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    styles = getSampleStyleSheet()
+    elements = []
 
-    p.setFont("Helvetica-Bold", 14)
-    p.drawString(50, height - 40, "Car List")
+    elements.append(Paragraph("Car List", styles['Title']))
+    elements.append(Spacer(1, 12))
 
-    p.setFont("Helvetica", 10)
-    y = height - 70
+    data = [['ID', 'Name', 'Price', 'Status']]
     cars = Car.objects.all()
-
-    # Table headers
-    p.drawString(50, y, "ID")
-    p.drawString(100, y, "Name")
-    p.drawString(300, y, "Price")
-    p.drawString(400, y, "Status")
-    y -= 20
-
     for car in cars:
-        if y < 50:
-            p.showPage()
-            y = height - 50
-        p.drawString(50, y, str(car.id))
-        p.drawString(100, y, car.name)
-        p.drawString(300, y, f"${car.price:.2f}")
-        p.drawString(400, y, car.status)
-        y -= 20
+        data.append([str(car.id), car.name, f"${car.price:.2f}", car.status.capitalize()])
 
-    p.showPage()
-    p.save()
+    table = Table(data, colWidths=[50, 250, 80, 80])
+    style = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#d5dae6')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+        ('ALIGN', (2, 1), (2, -1), 'RIGHT'),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('GRID', (0, 0), (-1, -1), 0.8, colors.grey),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f0f0f0')]),
+    ])
+    table.setStyle(style)
+    elements.append(table)
+
+    doc.build(elements)
     return response

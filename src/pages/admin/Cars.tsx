@@ -101,6 +101,50 @@ const Cars = () => {
     }
   };
 
+  const handleApprove = async (carId: number) => {
+  const token = localStorage.getItem("accessToken");
+
+  try {
+    const response = await fetch(`http://localhost:8000/api/cars/${carId}/approve/`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) throw new Error("Failed to approve car");
+
+    // Refresh car list after success
+    setAllCars((prev) =>
+      prev.map((car) => (car.id === carId ? { ...car, status: "approved" } : car))
+    );
+  } catch (error) {
+    console.error("Error approving car:", error);
+  }
+};
+
+const handleReject = async (carId: number) => {
+  const token = localStorage.getItem("accessToken");
+
+  try {
+    const response = await fetch(`http://localhost:8000/api/cars/${carId}/reject/`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) throw new Error("Failed to reject car");
+
+    // Refresh car list after success
+    setAllCars((prev) =>
+      prev.map((car) => (car.id === carId ? { ...car, status: "rejected" } : car))
+    );
+  } catch (error) {
+    console.error("Error rejecting car:", error);
+  }
+};
+
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminNavigation />
@@ -176,10 +220,10 @@ const Cars = () => {
                           </Button>
                           {car.status === "pending" && (
                             <>
-                              <Button className="bg-green-600 hover:bg-green-700" size="sm">
+                              <Button className="bg-green-600 hover:bg-green-700" size="sm" onClick={() => handleApprove(car.id)}>
                                 Approve
                               </Button>
-                              <Button variant="destructive" size="sm">
+                              <Button variant="destructive" size="sm" onClick={() => handleReject(car.id)}>
                                 Reject
                               </Button>
                             </>
