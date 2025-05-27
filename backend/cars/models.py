@@ -1,6 +1,6 @@
 from django.db import models
 from sellers.models import Seller
-
+from customers.models import Customer
 class Car(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -30,9 +30,3 @@ class CarView(models.Model):
     viewed_at = models.DateTimeField(auto_now_add=True)
     # Optional: track viewer IP or user to avoid duplicates
 
-class Inquiry(models.Model):
-    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='inquiries')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    message = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    # Optional: add user/customer info, status, etc.

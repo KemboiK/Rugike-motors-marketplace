@@ -8,7 +8,8 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.pdfgen import canvas
 from django.http import HttpResponse
-from .models import Car, CarView, Inquiry
+from .models import Car, CarView
+from customers.models import Inquiry 
 from .serializers import CarSerializer
 
 

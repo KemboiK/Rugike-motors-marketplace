@@ -1,5 +1,4 @@
 from django.db import models
-from cars.models import Car
 
 class Customer(models.Model):
     name = models.CharField(max_length=100)
@@ -14,7 +13,7 @@ class Customer(models.Model):
 
 
 class Inquiry(models.Model):
-    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='inquiries')
+    car = models.ForeignKey('cars.Car', on_delete=models.CASCADE, related_name='inquiries')
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='inquiries')
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
