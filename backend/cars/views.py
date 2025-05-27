@@ -1,10 +1,13 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from django.http import HttpResponse
 from .models import Car
 from .serializers import CarSerializer
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import permission_classes
+
 
 @api_view(['GET', 'POST'])
 def car_list_create(request):
@@ -84,3 +87,44 @@ def my_cars(request):
     cars = Car.objects.filter(seller=seller)
     serializer = CarSerializer(cars, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def download_car_list_pdf(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="car_list.pdf"'
+
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+
+    p.setFont("Helvetica-Bold", 14)
+    p.drawString(50, height - 40, "Car List")
+
+    p.setFont("Helvetica", 10)
+    y = height - 70
+    cars = Car.objects.all()
+
+    # Table headers
+    p.drawString(50, y, "ID")
+    p.drawString(100, y, "Make")
+    p.drawString(200, y, "Model")
+    p.drawString(300, y, "Year")
+    p.drawString(350, y, "Price")
+    p.drawString(420, y, "Status")
+    y -= 20
+
+    for car in cars:
+        if y < 50:
+            p.showPage()
+            y = height - 50
+        p.drawString(50, y, str(car.id))
+        p.drawString(100, y, car.make)
+        p.drawString(200, y, car.model)
+        p.drawString(300, y, str(car.year))
+        p.drawString(350, y, f"${car.price}")
+        p.drawString(420, y, car.status)
+        y -= 20
+
+    p.showPage()
+    p.save()
+    return response

@@ -7,4 +7,5 @@ urlpatterns = [
     path('<int:pk>/approve/', views.approve_car, name='approve-car'),
     path('<int:pk>/reject/', views.reject_car, name='reject-car'),
     path('my/', views.my_cars, name='my-cars'),
+    path('download/pdf/', views.download_car_list_pdf, name='download-car-list-pdf'),
 ]

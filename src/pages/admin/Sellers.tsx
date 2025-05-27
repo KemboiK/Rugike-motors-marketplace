@@ -41,7 +41,7 @@ const Sellers = () => {
   const updateSellerStatus = async (id, action) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch(`http://localhost:8000/api/sellers/${id}/${action}/`, {
+      const res = await fetch(`http://localhost:8000/api/sellers/sellers/${id}/${action}/`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
