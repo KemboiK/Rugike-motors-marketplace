@@ -8,7 +8,7 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.pdfgen import canvas
 from django.http import HttpResponse
-from .models import Car
+from .models import Car, CarView, Inquiry
 from .serializers import CarSerializer
 
 
@@ -44,6 +44,7 @@ def car_detail(request, pk):
         return Response({'error': 'Car not found'}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
+        CarView.objects.create(car=car)
         serializer = CarSerializer(car)
         return Response(serializer.data)
 
@@ -91,6 +92,20 @@ def my_cars(request):
     serializer = CarSerializer(cars, many=True)
     return Response(serializer.data)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def submit_inquiry(request, car_id):
+    try:
+        car = Car.objects.get(pk=car_id)
+    except Car.DoesNotExist:
+        return Response({'error': 'Car not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    Inquiry.objects.create(
+        car=car,
+        customer=request.user,
+        message=request.data.get('message', '')
+    )
+    return Response({'message': 'Inquiry submitted successfully'}, status=status.HTTP_201_CREATED)
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def download_car_list_pdf(request):

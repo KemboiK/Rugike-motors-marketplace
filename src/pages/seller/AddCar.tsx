@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { X } from "lucide-react";
+import { toast } from "sonner";
 
 const AddCar = () => {
   const [images, setImages] = useState<File[]>([]);
@@ -24,6 +25,18 @@ const AddCar = () => {
     parkingSensors: false,
     backupCamera: false,
   });
+  const [make, setMake] = useState("");
+  const [model, setModel] = useState("");
+  const [year, setYear] = useState<number | undefined>();
+  const [price, setPrice] = useState<number | undefined>();
+  const [mileage, setMileage] = useState<number | undefined>();
+  const [color, setColor] = useState("");
+  const [transmission, setTransmission] = useState("");
+  const [fuelType, setFuelType] = useState("");
+  const [description, setDescription] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -48,11 +61,59 @@ const AddCar = () => {
     setPreviewUrls(previewUrls.filter((_, i) => i !== index));
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Here we would normally handle the form submission to a backend API
-    console.log("Form submitted!");
-  };
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const token = localStorage.getItem("accessToken");
+  if (!token) {
+    toast.error("You must be logged in to submit a car.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("name", make);
+  formData.append("model", model);
+  formData.append("year", year?.toString() || "");
+  formData.append("price", price?.toString() || "");
+  formData.append("mileage", mileage?.toString() || "");
+  formData.append("color", color);
+  formData.append("transmission", transmission);
+  formData.append("fuel_type", fuelType);
+  formData.append("description", description);
+  formData.append("phone", phone);
+  formData.append("email", email);
+  
+  // Add boolean features
+  Object.entries(features).forEach(([key, value]) => {
+    formData.append(`features.${key}`, value.toString());
+  });
+
+  // Append images
+  images.forEach((file, index) => {
+    formData.append("images", file); // backend should expect "images" as a list
+  });
+
+  try {
+    const res = await fetch("http://localhost:8000/api/cars/", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    if (res.ok) {
+      toast.success("Car submitted for review!");
+    } else {
+      const errorData = await res.json();
+      toast.error(`Submission failed: ${JSON.stringify(errorData)}`);
+    }
+  } catch (error) {
+    console.error("Network error:", error);
+    toast.error("Network error occurred while submitting the car.");
+  }
+};
+
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -74,32 +135,32 @@ const AddCar = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="make">Make</Label>
-                    <Input id="make" placeholder="e.g. Toyota" required />
+                    <Input id="make" value={make} onChange={(e) => setMake(e.target.value)} placeholder="e.g. Toyota" required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="model">Model</Label>
-                    <Input id="model" placeholder="e.g. Camry" required />
+                    <Input id="model" value={model} onChange={(e) => setModel(e.target.value)} placeholder="e.g. Camry" required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="year">Year</Label>
-                    <Input id="year" placeholder="e.g. 2023" type="number" required />
+                    <Input id="year" type="number" value={year || ''} onChange={(e) => setYear(Number(e.target.value))} placeholder="e.g. 2023" required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="price">Price (USD)</Label>
-                    <Input id="price" placeholder="e.g. 25000" type="number" required />
+                    <Input id="price" type="number" value={price || ''} onChange={(e) => setPrice(Number(e.target.value))} placeholder="e.g. 25000" required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="mileage">Mileage</Label>
-                    <Input id="mileage" placeholder="e.g. 15000" type="number" required />
+                    <Input id="mileage" type="number" value={mileage || ''} onChange={(e) => setMileage(Number(e.target.value))} placeholder="e.g. 15000" required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="color">Color</Label>
-                    <Input id="color" placeholder="e.g. Silver" required />
+                    <Input id="color" value={color} onChange={(e) => setColor(e.target.value)} placeholder="e.g. Silver" required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="transmission">Transmission</Label>
                     <select 
-                      id="transmission"
+                      id="transmission" value={transmission} onChange={(e) => setTransmission(e.target.value)}
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                       required
                     >
@@ -111,7 +172,7 @@ const AddCar = () => {
                   <div className="space-y-2">
                     <Label htmlFor="fuelType">Fuel Type</Label>
                     <select 
-                      id="fuelType"
+                      id="fuelType" value={fuelType} onChange={(e) => setFuelType(e.target.value)}
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                       required
                     >
@@ -128,6 +189,8 @@ const AddCar = () => {
                   <Label htmlFor="description">Description</Label>
                   <Textarea 
                     id="description" 
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     placeholder="Provide a detailed description of your car" 
                     className="min-h-32"
                     required
@@ -257,11 +320,11 @@ const AddCar = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="phone">Phone Number</Label>
-                    <Input id="phone" type="tel" placeholder="+1 (555) 000-0000" required />
+                    <Input id="phone" type="tel"value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+(254) 00-000-000" required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="your@email.com" required />
+                    <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" required />
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

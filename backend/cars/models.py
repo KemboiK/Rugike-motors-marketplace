@@ -16,3 +16,23 @@ class Car(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def views_count(self):
+        return self.car_views.count()
+
+    @property
+    def inquiries_count(self):
+        return self.inquiries.count()
+
+class CarView(models.Model):
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='car_views')
+    viewed_at = models.DateTimeField(auto_now_add=True)
+    # Optional: track viewer IP or user to avoid duplicates
+
+class Inquiry(models.Model):
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='inquiries')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    # Optional: add user/customer info, status, etc.
