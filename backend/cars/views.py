@@ -106,11 +106,9 @@ def download_car_list_pdf(request):
 
     # Table headers
     p.drawString(50, y, "ID")
-    p.drawString(100, y, "Make")
-    p.drawString(200, y, "Model")
-    p.drawString(300, y, "Year")
-    p.drawString(350, y, "Price")
-    p.drawString(420, y, "Status")
+    p.drawString(100, y, "Name")
+    p.drawString(300, y, "Price")
+    p.drawString(400, y, "Status")
     y -= 20
 
     for car in cars:
@@ -118,11 +116,9 @@ def download_car_list_pdf(request):
             p.showPage()
             y = height - 50
         p.drawString(50, y, str(car.id))
-        p.drawString(100, y, car.make)
-        p.drawString(200, y, car.model)
-        p.drawString(300, y, str(car.year))
-        p.drawString(350, y, f"${car.price}")
-        p.drawString(420, y, car.status)
+        p.drawString(100, y, car.name)
+        p.drawString(300, y, f"${car.price:.2f}")
+        p.drawString(400, y, car.status)
         y -= 20
 
     p.showPage()

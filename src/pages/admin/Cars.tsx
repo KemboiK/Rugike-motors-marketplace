@@ -26,7 +26,7 @@ const Cars = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:8000/api/cars/") // Replace with your actual API URL
+    fetch("http://localhost:8000/api/cars/") 
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch cars");
         return res.json();
@@ -59,6 +59,35 @@ const Cars = () => {
     return matchesSearch && matchesStatus;
   });
 
+  const handleDownloadPDFFromAPI = async () => {
+  try {
+    const token = localStorage.getItem("accessToken");
+
+    const response = await fetch("http://localhost:8000/api/cars/download/pdf/", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to download PDF");
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "car_list.pdf";
+    link.click();
+
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading PDF:", error);
+  }
+};
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "approved":
@@ -80,7 +109,9 @@ const Cars = () => {
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-rugike-primary">Car Management</h1>
           <div className="mt-4 md:mt-0">
-            <Button className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90">
+            <Button className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90"
+            onClick={handleDownloadPDFFromAPI}
+            >
               Download Car List
             </Button>
           </div>
