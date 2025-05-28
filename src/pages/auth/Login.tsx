@@ -84,20 +84,11 @@ const Login = () => {
             <TabsContent value="seller">
               <p className="text-sm text-muted-foreground mb-4">
                 Login as a seller to list your cars and manage your inventory.
-                <br /><br />
-                <span className="font-semibold">Demo credentials:</span><br />
-                Username: seller<br />
-                Password: seller123
               </p>
             </TabsContent>
-
             <TabsContent value="admin">
               <p className="text-sm text-muted-foreground mb-4">
                 Admin access is restricted. Use your admin credentials to login.
-                <br /><br />
-                <span className="font-semibold">Demo credentials:</span><br />
-                Username: admin<br />
-                Password: admin123
               </p>
             </TabsContent>
           </Tabs>
