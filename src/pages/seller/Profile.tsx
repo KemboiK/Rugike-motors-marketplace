@@ -16,7 +16,7 @@ const Profile = () => {
   const [formData, setFormData] = useState({
     name: "John Doe",
     email: "johndoe@example.com",
-    phone: "+(254) 12 345 678",
+    phone: "+(254)7 12345678",
     company: "JD Motors",
     website: "jdmotors.com",
     address: "123 Main St, New York, NY 10001",

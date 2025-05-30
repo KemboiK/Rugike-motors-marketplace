@@ -14,7 +14,7 @@ const Settings = () => {
   const [generalSettings, setGeneralSettings] = useState({
     siteName: "RUGIKE Motors",
     contactEmail: "admin@rugike.com",
-    contactPhone: "+1 (555) 123-4567",
+    contactPhone: "+(254)7 12345678",
     enableRegistration: true,
     requireApproval: true,
     maintenanceMode: false
