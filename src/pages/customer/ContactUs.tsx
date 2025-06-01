@@ -116,7 +116,7 @@ const ContactUs = () => {
                       </div>
                       <div>
                         <h3 className="font-medium">WhatsApp</h3>
-                        <p className="text-rugike-secondary text-sm">+1 (555) 123-4567</p>
+                        <p className="text-rugike-secondary text-sm">+(254)7 12 345-678</p>
                       </div>
                     </div>
                     
