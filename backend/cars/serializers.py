@@ -1,15 +1,17 @@
 from rest_framework import serializers
 from .models import Car
+from customers.models import Inquiry
+
 class CarSerializer(serializers.ModelSerializer):
-    views = serializers.IntegerField(source='views_count', read_only=True)
-    inquiries = serializers.IntegerField(source='inquiries_count', read_only=True)    
+    views = serializers.SerializerMethodField()
+    inquiries = serializers.SerializerMethodField()
+
     class Meta:
         model = Car
         fields = '__all__'
 
     def get_views(self, obj):
-        return getattr(obj, 'views_count', 0)  # safely fallback to 0
+        return obj.carview_set.count()
 
     def get_inquiries(self, obj):
-        from customers.models import Inquiry 
         return Inquiry.objects.filter(car=obj).count()
