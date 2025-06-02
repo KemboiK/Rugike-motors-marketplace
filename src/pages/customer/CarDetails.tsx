@@ -34,9 +34,9 @@ const CarDetails = () => {
         setLoading(true);
         setError(null);
 
-        const token = localStorage.getItem("access_token");
+        const token = localStorage.getItem("access");
 
-        const response = await fetch(`/api/cars/cars/${id}/`, {
+        const response = await fetch(`/api/cars/${id}/`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: token ? `Bearer ${token}` : "",
@@ -73,9 +73,30 @@ const CarDetails = () => {
     toast.success("Link copied to clipboard!");
   };
 
-  const handleContact = () => {
+const handleContact = async () => {
+  const token = localStorage.getItem("access");
+
+  try {
+    const response = await fetch(`/api/inquiries/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+      body: JSON.stringify({ car: carData.id }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to send inquiry.");
+    }
+
     toast.success("Message sent to the seller!");
-  };
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to contact the seller.");
+  }
+};
+
 
   if (loading) {
     return (
