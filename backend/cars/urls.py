@@ -9,5 +9,8 @@ urlpatterns = [
     path('my/', views.my_cars, name='my-cars'),
     path('download/pdf/', views.download_car_list_pdf, name='download-car-list-pdf'),
     path('<int:car_id>/inquire/', views.submit_inquiry, name='submit-inquiry'),
+    path('all/', views.PublicCarListView.as_view(), name='public-car-list'),
+    path('all/<int:pk>/', views.PublicCarDetailView.as_view(), name='public-car-detail'),
+
 
 ]

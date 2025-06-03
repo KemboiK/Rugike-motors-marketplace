@@ -2,12 +2,14 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.pdfgen import canvas
 from django.http import HttpResponse
+from django.db.models import Count
 from .models import Car, CarView
 from customers.models import Inquiry 
 from .serializers import CarSerializer
@@ -107,6 +109,21 @@ def submit_inquiry(request, car_id):
         message=request.data.get('message', '')
     )
     return Response({'message': 'Inquiry submitted successfully'}, status=status.HTTP_201_CREATED)
+
+class PublicCarListView(ListAPIView):
+    queryset = Car.objects.filter(status='approved').annotate(
+        views_count=Count('car_views'),        
+        inquiries_count=Count('inquiries')     
+)
+
+    serializer_class = CarSerializer
+
+class PublicCarDetailView(RetrieveAPIView):
+    queryset = Car.objects.filter(status='approved')
+    serializer_class = CarSerializer
+    permission_classes = []
+
+
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def download_car_list_pdf(request):
