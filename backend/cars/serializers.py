@@ -1,15 +1,17 @@
 from rest_framework import serializers
 from .models import Car
+
 class CarSerializer(serializers.ModelSerializer):
-    views = serializers.IntegerField(source='views_count', read_only=True)
-    inquiries = serializers.IntegerField(source='inquiries_count', read_only=True)    
+    views_count = serializers.SerializerMethodField()
+    inquiries_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Car
         fields = '__all__'
 
-    def get_views(self, obj):
-        return getattr(obj, 'views_count', 0)  # safely fallback to 0
+    def get_views_count(self, obj):
+        # Use annotated value if present, otherwise fall back to property
+        return getattr(obj, 'annotated_views', obj.car_views.count())
 
-    def get_inquiries(self, obj):
-        from customers.models import Inquiry 
-        return Inquiry.objects.filter(car=obj).count()
+    def get_inquiries_count(self, obj):
+        return getattr(obj, 'annotated_inquiries', obj.inquiries.count())

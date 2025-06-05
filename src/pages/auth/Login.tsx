@@ -38,7 +38,11 @@ const Login = () => {
         localStorage.setItem("refreshToken", data.refresh);
         toast.success(`${role} login successful`);
         localStorage.setItem("userRole", role);
-        navigate(`/${role}/dashboard`);
+        if(role === "customer"){
+          navigate("/"); //temporary redirect to home
+        } else {
+          navigate(`/${role}/dashboard`);
+        }      
       } else {
         toast.error("Invalid credentials");
       }

@@ -34,12 +34,9 @@ const CarDetails = () => {
         setLoading(true);
         setError(null);
 
-        const token = localStorage.getItem("access");
-
         const response = await fetch(`/api/cars/all/${id}/`, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: token ? `Bearer ${token}` : "",
           },
         });
 

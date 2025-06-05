@@ -112,8 +112,8 @@ def submit_inquiry(request, car_id):
 
 class PublicCarListView(ListAPIView):
     queryset = Car.objects.filter(status='approved').annotate(
-        views_count=Count('car_views'),        
-        inquiries_count=Count('inquiries')     
+        annotated_views=Count('car_views'),        
+        annotated_inquiries=Count('inquiries')     
 )
 
     serializer_class = CarSerializer
