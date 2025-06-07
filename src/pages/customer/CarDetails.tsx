@@ -34,7 +34,7 @@ const CarDetails = () => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`/api/cars/all/${id}/`, {
+        const response = await fetch(`http://localhost:8000/api/cars/all/${id}/`, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -74,7 +74,7 @@ const handleContact = async () => {
   const token = localStorage.getItem("access");
 
   try {
-    const response = await fetch(`/api/cars/inquiries/`, {
+    const response = await fetch(`http://localhost:8000/api/cars/inquiries/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

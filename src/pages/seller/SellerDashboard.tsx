@@ -15,7 +15,7 @@ const SellerDashboard = () => {
     {
       id: 1,
       name: "Toyota Camry 2022",
-      price: "$28,500",
+      price: "KES 2,850,000",
       status: "approved",
       views: 45,
       inquiries: 3,
@@ -24,7 +24,7 @@ const SellerDashboard = () => {
     {
       id: 2,
       name: "Honda Civic 2023",
-      price: "$22,900",
+      price: "KES 2,290,000",
       status: "pending",
       views: 12,
       inquiries: 0,
@@ -33,7 +33,7 @@ const SellerDashboard = () => {
     {
       id: 3,
       name: "Ford Mustang 2021",
-      price: "$38,700",
+      price: "KES 3,870,000",
       status: "approved",
       views: 87,
       inquiries: 6,
