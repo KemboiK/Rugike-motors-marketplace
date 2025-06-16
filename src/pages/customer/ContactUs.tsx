@@ -37,7 +37,7 @@ const ContactUs = () => {
                 <CardDescription>Our team is available Mon-Fri, 9am-6pm</CardDescription>
               </CardHeader>
               <CardContent className="text-center">
-                <p className="text-lg font-medium text-rugike-primary">+1 (555) 123-4567</p>
+                <p className="text-lg font-medium text-rugike-primary">+(254)*********</p>
                 <Button variant="link" className="text-rugike-accent mt-2">
                   Call Now
                 </Button>
@@ -116,7 +116,7 @@ const ContactUs = () => {
                       </div>
                       <div>
                         <h3 className="font-medium">WhatsApp</h3>
-                        <p className="text-rugike-secondary text-sm">+(254)7 12 345-678</p>
+                        <p className="text-rugike-secondary text-sm">+(254)*********</p>
                       </div>
                     </div>
                     
@@ -137,7 +137,7 @@ const ContactUs = () => {
                       <address className="not-italic text-rugike-secondary">
                         RUGIKE Motors Showroom<br />
                         123 Luxury Ave<br />
-                        New York, NY 10001
+                        Nairobi, Kenya 10001
                       </address>
                       <p className="mt-2 text-rugike-secondary">
                         <strong>Hours:</strong> Mon-Sat: 9am-7pm, Sun: 11am-5pm
@@ -172,7 +172,7 @@ const ContactUs = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="phone">Phone Number</Label>
-                        <Input id="phone" type="tel" placeholder="+1 (555) 000-0000" />
+                        <Input id="phone" type="tel" placeholder="+(254)*********" />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="subject">Subject</Label>
