@@ -340,7 +340,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="whatsapp">WhatsApp Number (optional)</Label>
-                    <Input id="whatsapp" placeholder="+1 (555) 000-0000" />
+                    <Input id="whatsapp" placeholder="+(254) 00-000-000" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="snapchat">Snapchat (optional)</Label>
