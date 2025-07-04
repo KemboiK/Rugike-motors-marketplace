@@ -104,9 +104,9 @@ const MyCars = () => {
                           {car.status === "approved" ? "Approved" : "Pending"}
                         </Badge>
                       </TableCell>
-                      <TableCell>{car.views}</TableCell>
-                      <TableCell>{car.inquiries}</TableCell>
-                      <TableCell>{car.date}</TableCell>
+                      <TableCell>{car.views_count}</TableCell>
+                      <TableCell>{car.inquiries_count}</TableCell>
+                      <TableCell>{new Date(car.created_at).toLocaleDateString()}</TableCell>
                       <TableCell>
                         <div className="flex space-x-2">
                           <Button variant="outline" size="icon" onClick={() => handleEdit(car)}>
