@@ -7,30 +7,33 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.pdfgen import canvas
 from django.http import HttpResponse
 from django.db.models import Count
-from .models import Car, CarView
-from customers.models import Inquiry 
+from .models import Car, CarView, CarImage, CarFeature
+from customers.models import Inquiry
 from .serializers import CarSerializer
 
 
 @api_view(['GET', 'POST'])
 def car_list_create(request):
     if request.method == 'GET':
-        cars = Car.objects.all()
+        cars = Car.objects.all().annotate(
+            annotated_views=Count('car_views'),
+            annotated_inquiries=Count('inquiries')
+        )
         serializer = CarSerializer(cars, many=True)
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        data = request.data.copy()
+        if not request.user.is_authenticated:
+            return Response({'error': 'Authentication required'}, status=status.HTTP_401_UNAUTHORIZED)
 
-        # Automatically assign the logged-in seller
         if not hasattr(request.user, 'seller'):
             return Response({'error': 'Only sellers can add cars'}, status=status.HTTP_403_FORBIDDEN)
 
+        data = request.data.copy()
         data['seller'] = request.user.seller.id
-        data['status'] = 'pending'  # force it to always be pending on creation
+        data['status'] = 'pending'
 
         serializer = CarSerializer(data=data)
         if serializer.is_valid():
@@ -47,42 +50,67 @@ def car_detail(request, pk):
         return Response({'error': 'Car not found'}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        CarView.objects.create(car=car)
+        # Track view with IP
+        ip = request.META.get('REMOTE_ADDR')
+        CarView.objects.create(car=car, ip_address=ip)
+        car = Car.objects.filter(pk=pk).annotate(
+            annotated_views=Count('car_views'),
+            annotated_inquiries=Count('inquiries')
+        ).first()
         serializer = CarSerializer(car)
         return Response(serializer.data)
 
     elif request.method == 'PUT':
-        serializer = CarSerializer(car, data=request.data)
+        if not request.user.is_authenticated:
+            return Response({'error': 'Authentication required'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Only the seller who owns the car or admin can update
+        if not request.user.is_staff and (not hasattr(request.user, 'seller') or car.seller != request.user.seller):
+            return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = CarSerializer(car, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
+        if not request.user.is_authenticated:
+            return Response({'error': 'Authentication required'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Only the seller who owns the car or admin can delete
+        if not request.user.is_staff and (not hasattr(request.user, 'seller') or car.seller != request.user.seller):
+            return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+
         car.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 @api_view(['POST'])
+@permission_classes([IsAdminUser])
 def approve_car(request, pk):
     try:
         car = Car.objects.get(pk=pk)
     except Car.DoesNotExist:
         return Response({'error': 'Car not found'}, status=status.HTTP_404_NOT_FOUND)
-    
+
     car.status = 'approved'
     car.save()
     return Response({'status': 'car approved'}, status=status.HTTP_200_OK)
 
+
 @api_view(['POST'])
+@permission_classes([IsAdminUser])
 def reject_car(request, pk):
     try:
         car = Car.objects.get(pk=pk)
     except Car.DoesNotExist:
         return Response({'error': 'Car not found'}, status=status.HTTP_404_NOT_FOUND)
-    
+
     car.status = 'rejected'
     car.save()
     return Response({'status': 'car rejected'}, status=status.HTTP_200_OK)
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -91,9 +119,13 @@ def my_cars(request):
         return Response({'error': 'Only sellers can view their cars'}, status=status.HTTP_403_FORBIDDEN)
 
     seller = request.user.seller
-    cars = Car.objects.filter(seller=seller)
+    cars = Car.objects.filter(seller=seller).annotate(
+        annotated_views=Count('car_views'),
+        annotated_inquiries=Count('inquiries')
+    )
     serializer = CarSerializer(cars, many=True)
     return Response(serializer.data)
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -103,23 +135,31 @@ def submit_inquiry(request, car_id):
     except Car.DoesNotExist:
         return Response({'error': 'Car not found'}, status=status.HTTP_404_NOT_FOUND)
 
+    if not hasattr(request.user, 'customer'):
+        return Response({'error': 'Only customers can submit inquiries'}, status=status.HTTP_403_FORBIDDEN)
+
     Inquiry.objects.create(
         car=car,
-        customer=request.user,
+        customer=request.user.customer,
         message=request.data.get('message', '')
     )
     return Response({'message': 'Inquiry submitted successfully'}, status=status.HTTP_201_CREATED)
 
+
 class PublicCarListView(ListAPIView):
     queryset = Car.objects.filter(status='approved').annotate(
-        annotated_views=Count('car_views'),        
-        annotated_inquiries=Count('inquiries')     
-)
-
+        annotated_views=Count('car_views'),
+        annotated_inquiries=Count('inquiries')
+    )
     serializer_class = CarSerializer
+    permission_classes = []
+
 
 class PublicCarDetailView(RetrieveAPIView):
-    queryset = Car.objects.filter(status='approved')
+    queryset = Car.objects.filter(status='approved').annotate(
+        annotated_views=Count('car_views'),
+        annotated_inquiries=Count('inquiries')
+    )
     serializer_class = CarSerializer
     permission_classes = []
 
