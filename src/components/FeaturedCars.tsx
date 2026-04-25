@@ -1,117 +1,70 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowRight, Fuel, Gauge, Car, Eye } from "lucide-react";
+import { ArrowRight, Fuel, Gauge, Car, Eye, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface Car {
   id: number;
   name: string;
-  image: string;
+  images: { id: number; image: string }[];
   price: string;
   year: number;
-  mileage: string;
+  mileage: number;
   transmission: string;
-  fuelType?: string;
-  category?: string;
-  verified: boolean;
-  featured?: boolean;
-  viewCount?: number;
+  fuel_type: string;
+  views_count: number;
+  status: string;
 }
 
-const cars: Car[] = [
-  {
-    id: 1,
-    name: "Mercedes-Benz E-Class",
-    image: "https://images.unsplash.com/photo-1553440569-bcc63803a83d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    price: "KES 4,250,000",
-    year: 2023,
-    mileage: "15,000 mi",
-    transmission: "Automatic",
-    fuelType: "Gasoline",
-    category: "luxury",
-    verified: true,
-    featured: true,
-    viewCount: 245
-  },
-  {
-    id: 2,
-    name: "BMW 5 Series",
-    image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    price: "KES 3,890,000",
-    year: 2022,
-    mileage: "22,300 mi",
-    transmission: "Automatic",
-    fuelType: "Hybrid",
-    category: "luxury",
-    verified: true,
-    viewCount: 187
-  },
-  {
-    id: 3,
-    name: "Audi A6",
-    image: "https://images.unsplash.com/photo-1606664515524-ed2f786a0abd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    price: "KES 3,780,000",
-    year: 2023,
-    mileage: "18,700 mi",
-    transmission: "Automatic",
-    fuelType: "Diesel",
-    category: "luxury",
-    verified: true,
-    featured: true,
-    viewCount: 203
-  },
-  {
-    id: 4,
-    name: "Toyota RAV4",
-    image: "https://images.unsplash.com/photo-1568844293986-8c2587ab9651?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    price: "KES 2,950,000",
-    year: 2022,
-    mileage: "25,400 mi",
-    transmission: "Automatic",
-    fuelType: "Hybrid",
-    category: "suv",
-    verified: true,
-    viewCount: 156
-  },
-  {
-    id: 5,
-    name: "Tesla Model 3",
-    image: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    price: "KES 4,570,000",
-    year: 2023,
-    mileage: "9,800 mi",
-    transmission: "Automatic",
-    fuelType: "Electric",
-    category: "electric",
-    verified: true,
-    featured: true,
-    viewCount: 312
-  },
-  {
-    id: 6,
-    name: "Honda Civic",
-    image: "https://images.unsplash.com/photo-1590362891991-f776e747a588?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    price: "KES 2,390,000",
-    year: 2022,
-    mileage: "28,700 mi",
-    transmission: "Manual",
-    fuelType: "Gasoline",
-    category: "sedan",
-    verified: true,
-    viewCount: 134
-  }
-];
-
 const FeaturedCars = () => {
+  const [cars, setCars] = useState<Car[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("all");
-  
-  // Filter cars based on the active tab category
-  const filteredCars = activeTab === "all" 
-    ? cars 
-    : cars.filter(car => car.category === activeTab);
+
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/cars/all/");
+        if (!response.ok) throw new Error("Failed to fetch cars");
+        const data = await response.json();
+        setCars(data);
+      } catch (err) {
+        setError("Failed to load cars. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCars();
+  }, []);
+
+  const filteredCars = activeTab === "all"
+    ? cars
+    : cars.filter(car => car.fuel_type === activeTab);
+
+  if (loading) {
+    return (
+      <section className="py-20 bg-rugike-light">
+        <div className="container-custom flex justify-center items-center h-64">
+          <Loader2 className="h-10 w-10 animate-spin text-rugike-primary" />
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-20 bg-rugike-light">
+        <div className="container-custom flex justify-center items-center h-64">
+          <p className="text-red-500 text-lg">{error}</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-20 bg-rugike-light">
@@ -123,7 +76,7 @@ const FeaturedCars = () => {
               Discover our handpicked selection of premium vehicles, each thoroughly inspected and verified for quality.
             </p>
           </div>
-          <Link to="#">
+          <Link to="/cars/all">
             <Button variant="outline" className="mt-4 md:mt-0 border-rugike-primary text-rugike-primary hover:bg-rugike-primary hover:text-white group">
               View All Cars
               <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -134,19 +87,18 @@ const FeaturedCars = () => {
         <Tabs defaultValue="all" className="mb-8" onValueChange={setActiveTab}>
           <TabsList className="bg-white grid grid-cols-2 md:grid-cols-5 gap-2 p-1 w-full md:w-auto">
             <TabsTrigger value="all" className="data-[state=active]:bg-rugike-accent data-[state=active]:text-rugike-primary">All Cars</TabsTrigger>
-            <TabsTrigger value="luxury" className="data-[state=active]:bg-rugike-accent data-[state=active]:text-rugike-primary">Luxury</TabsTrigger>
-            <TabsTrigger value="suv" className="data-[state=active]:bg-rugike-accent data-[state=active]:text-rugike-primary">SUV</TabsTrigger>
-            <TabsTrigger value="sedan" className="data-[state=active]:bg-rugike-accent data-[state=active]:text-rugike-primary">Sedan</TabsTrigger>
+            <TabsTrigger value="gasoline" className="data-[state=active]:bg-rugike-accent data-[state=active]:text-rugike-primary">Gasoline</TabsTrigger>
+            <TabsTrigger value="diesel" className="data-[state=active]:bg-rugike-accent data-[state=active]:text-rugike-primary">Diesel</TabsTrigger>
+            <TabsTrigger value="hybrid" className="data-[state=active]:bg-rugike-accent data-[state=active]:text-rugike-primary">Hybrid</TabsTrigger>
             <TabsTrigger value="electric" className="data-[state=active]:bg-rugike-accent data-[state=active]:text-rugike-primary">Electric</TabsTrigger>
           </TabsList>
-          
-          {/* Simplified TabsContent structure - just use one content area that displays filtered cars */}
+
           <TabsContent value={activeTab} className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredCars.map((car) => (
                 <CarCard key={car.id} car={car} />
               ))}
-              
+
               {filteredCars.length === 0 && (
                 <div className="col-span-3 py-12 text-center">
                   <p className="text-xl text-rugike-secondary">No cars found in this category.</p>
@@ -161,31 +113,30 @@ const FeaturedCars = () => {
 };
 
 const CarCard = ({ car }: { car: Car }) => {
+  const imageUrl = car.images && car.images.length > 0
+    ? `http://127.0.0.1:8000${car.images[0].image}`
+    : "https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=800&q=80";
+
   return (
     <Card className="overflow-hidden border-0 shadow-md hover:shadow-xl transition-shadow group">
       <div className="relative h-60 overflow-hidden">
         <img
-          src={car.image}
+          src={imageUrl}
           alt={car.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        {car.featured && (
-          <Badge className="absolute top-3 right-3 bg-rugike-accent text-rugike-primary">
-            Featured
-          </Badge>
-        )}
-        {car.verified && (
-          <Badge className="absolute top-3 left-3 bg-rugike-primary text-white">
-            Verified
-          </Badge>
-        )}
+        <Badge className="absolute top-3 left-3 bg-rugike-primary text-white">
+          Verified
+        </Badge>
       </div>
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-3">
           <h3 className="text-xl font-semibold text-rugike-primary">{car.name}</h3>
-          <span className="text-xl font-bold text-rugike-accent">{car.price}</span>
+          <span className="text-xl font-bold text-rugike-accent">
+            KES {Number(car.price).toLocaleString()}
+          </span>
         </div>
-        
+
         <div className="grid grid-cols-2 gap-3 text-rugike-secondary mb-4">
           <div className="flex items-center gap-1">
             <Car className="h-4 w-4 text-rugike-accent" />
@@ -193,24 +144,22 @@ const CarCard = ({ car }: { car: Car }) => {
           </div>
           <div className="flex items-center gap-1">
             <Gauge className="h-4 w-4 text-rugike-accent" />
-            <span>{car.mileage}</span>
+            <span>{car.mileage.toLocaleString()} mi</span>
           </div>
           <div className="flex items-center gap-1 text-sm">
             <span>{car.transmission}</span>
           </div>
-          {car.fuelType && (
-            <div className="flex items-center gap-1 text-sm">
-              <Fuel className="h-4 w-4 text-rugike-accent" />
-              <span>{car.fuelType}</span>
-            </div>
-          )}
+          <div className="flex items-center gap-1 text-sm">
+            <Fuel className="h-4 w-4 text-rugike-accent" />
+            <span>{car.fuel_type}</span>
+          </div>
         </div>
-        
+
         <div className="flex items-center gap-1 text-sm text-rugike-secondary mb-4">
           <Eye className="h-4 w-4 text-rugike-accent" />
-          <span>{car.viewCount || 0} views</span>
+          <span>{car.views_count || 0} views</span>
         </div>
-        
+
         <Link to={`/cars/${car.id}`}>
           <Button className="w-full bg-rugike-primary hover:bg-rugike-dark group">
             View Details
