@@ -1,18 +1,59 @@
-from django.shortcuts import render
 from rest_framework import viewsets
-from .models import Customer
-from .serializers import CustomerSerializer
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
 from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
+from .models import Customer, Inquiry
+from .serializers import CustomerSerializer, InquirySerializer
+
 
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
+    permission_classes = [IsAdminUser]
+
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def activate_customer(request, pk):
+    try:
+        customer = Customer.objects.get(pk=pk)
+    except Customer.DoesNotExist:
+        return Response({'error': 'Customer not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    customer.is_active = True
+    customer.save()
+    return Response({'status': 'Customer activated'}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def deactivate_customer(request, pk):
+    try:
+        customer = Customer.objects.get(pk=pk)
+    except Customer.DoesNotExist:
+        return Response({'error': 'Customer not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    customer.is_active = False
+    customer.save()
+    return Response({'status': 'Customer deactivated'}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def my_inquiries(request):
+    if not hasattr(request.user, 'customer'):
+        return Response({'error': 'Only customers can view inquiries'}, status=status.HTTP_403_FORBIDDEN)
+
+    inquiries = Inquiry.objects.filter(customer=request.user.customer)
+    serializer = InquirySerializer(inquiries, many=True)
+    return Response(serializer.data)
+
 
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
@@ -27,23 +68,13 @@ def download_customer_list_pdf(request):
     elements.append(Paragraph("Customer List", styles['Title']))
     elements.append(Spacer(1, 12))
 
-    # Table header
     data = [['ID', 'Name', 'Email', 'Phone', 'Status', 'Join Date']]
-
     customers = Customer.objects.all().order_by('name')
     for customer in customers:
-        status = "Active" if customer.is_active else "Inactive"
+        status_text = "Active" if customer.is_active else "Inactive"
         joined = customer.joined_at.strftime("%Y-%m-%d")
         phone = customer.phone if customer.phone else '-'
-
-        data.append([
-            str(customer.id),
-            customer.name,
-            customer.email,
-            phone,
-            status,
-            joined
-        ])
+        data.append([str(customer.id), customer.name, customer.email, phone, status_text, joined])
 
     table = Table(data, colWidths=[40, 120, 150, 90, 60, 80])
     style = TableStyle([
