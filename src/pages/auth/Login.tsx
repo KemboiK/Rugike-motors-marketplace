@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -14,6 +13,15 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("customer");
+  const [isRegistering, setIsRegistering] = useState(false);
+
+  // Registration fields
+  const [regName, setRegName] = useState("");
+  const [regEmail, setRegEmail] = useState("");
+  const [regUsername, setRegUsername] = useState("");
+  const [regPassword, setRegPassword] = useState("");
+  const [regPhone, setRegPhone] = useState("");
+  const [regCompany, setRegCompany] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,8 +30,6 @@ const Login = () => {
       toast.error("Please enter both username and password");
       return;
     }
-
-    console.log("Submitting login", { username, password, role });
 
     try {
       const response = await fetch("http://127.0.0.1:8000/api/token/", {
@@ -34,21 +40,72 @@ const Login = () => {
 
       if (response.ok) {
         const data = await response.json();
+
+        // Use role from backend not from tab
+        const actualRole = data.role;
+
+        // Check if role matches selected tab
+        if (role !== actualRole && !(role === 'admin' && actualRole === 'admin')) {
+          toast.error(`Invalid credentials for ${role} login`);
+          return;
+        }
+
         localStorage.setItem("accessToken", data.access);
         localStorage.setItem("refreshToken", data.refresh);
-        toast.success(`${role} login successful`);
-        localStorage.setItem("userRole", role);
-        if(role === "customer"){
-          navigate("/"); //temporary redirect to home
+        localStorage.setItem("userRole", actualRole);
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("userId", data.id);
+
+        toast.success(`Welcome back, ${data.username}!`);
+
+        if (actualRole === "customer") {
+          navigate("/");
         } else {
-          navigate(`/${role}/dashboard`);
-        }      
+          navigate(`/${actualRole}/dashboard`);
+        }
       } else {
         toast.error("Invalid credentials");
       }
     } catch (error) {
       console.error("Login error", error);
-      toast.error("Login failed");
+      toast.error("Login failed. Please check your connection.");
+    }
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!regName || !regEmail || !regUsername || !regPassword) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    try {
+      const endpoint = role === "seller"
+        ? "http://127.0.0.1:8000/api/sellers/register/"
+        : "http://127.0.0.1:8000/api/sellers/register/customer/";
+
+      const body = role === "seller"
+        ? { name: regName, email: regEmail, username: regUsername, password: regPassword, phone: regPhone, company: regCompany }
+        : { name: regName, email: regEmail, username: regUsername, password: regPassword, phone: regPhone };
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      if (response.ok) {
+        toast.success("Registration successful! Please login.");
+        setIsRegistering(false);
+      } else {
+        const data = await response.json();
+        const errorMsg = Object.values(data).flat().join(", ");
+        toast.error(errorMsg || "Registration failed");
+      }
+    } catch (error) {
+      console.error("Registration error", error);
+      toast.error("Registration failed. Please check your connection.");
     }
   };
 
@@ -59,7 +116,9 @@ const Login = () => {
           <CardTitle className="text-2xl">
             <span className="text-rugike-accent">RUGIKE</span> Motors
           </CardTitle>
-          <CardDescription>Login to access your account</CardDescription>
+          <CardDescription>
+            {isRegistering ? "Create your account" : "Login to access your account"}
+          </CardDescription>
         </CardHeader>
 
         <CardContent>
@@ -81,13 +140,12 @@ const Login = () => {
 
             <TabsContent value="customer">
               <p className="text-sm text-muted-foreground mb-4">
-                As a customer, explore our premium car marketplace and find your dream car.
+                Explore our premium car marketplace and find your dream car.
               </p>
             </TabsContent>
-
             <TabsContent value="seller">
               <p className="text-sm text-muted-foreground mb-4">
-                Login as a seller to list your cars and manage your inventory.
+                List your cars and manage your inventory.
               </p>
             </TabsContent>
             <TabsContent value="admin">
@@ -97,28 +155,116 @@ const Login = () => {
             </TabsContent>
           </Tabs>
 
-          <form onSubmit={handleLogin} className="mt-4 space-y-4">
-            <div>
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                placeholder="Enter your username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <Button type="submit" className="w-full mt-6">Login</Button>
-          </form>
+          {/* LOGIN FORM */}
+          {!isRegistering && (
+            <form onSubmit={handleLogin} className="mt-4 space-y-4">
+              <div>
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  placeholder="Enter your username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <Button type="submit" className="w-full mt-2">Login</Button>
+              {role !== "admin" && (
+                <p className="text-center text-sm text-muted-foreground mt-2">
+                  Don't have an account?{" "}
+                  <span
+                    className="text-rugike-accent cursor-pointer hover:underline"
+                    onClick={() => setIsRegistering(true)}
+                  >
+                    Register here
+                  </span>
+                </p>
+              )}
+            </form>
+          )}
+
+          {/* REGISTRATION FORM */}
+          {isRegistering && role !== "admin" && (
+            <form onSubmit={handleRegister} className="mt-4 space-y-4">
+              <div>
+                <Label htmlFor="regName">Full Name *</Label>
+                <Input
+                  id="regName"
+                  placeholder="John Doe"
+                  value={regName}
+                  onChange={(e) => setRegName(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="regEmail">Email *</Label>
+                <Input
+                  id="regEmail"
+                  type="email"
+                  placeholder="john@example.com"
+                  value={regEmail}
+                  onChange={(e) => setRegEmail(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="regUsername">Username *</Label>
+                <Input
+                  id="regUsername"
+                  placeholder="johndoe"
+                  value={regUsername}
+                  onChange={(e) => setRegUsername(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="regPassword">Password *</Label>
+                <Input
+                  id="regPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  value={regPassword}
+                  onChange={(e) => setRegPassword(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="regPhone">Phone</Label>
+                <Input
+                  id="regPhone"
+                  placeholder="+1 (555) 000-0000"
+                  value={regPhone}
+                  onChange={(e) => setRegPhone(e.target.value)}
+                />
+              </div>
+              {role === "seller" && (
+                <div>
+                  <Label htmlFor="regCompany">Company</Label>
+                  <Input
+                    id="regCompany"
+                    placeholder="Your company name"
+                    value={regCompany}
+                    onChange={(e) => setRegCompany(e.target.value)}
+                  />
+                </div>
+              )}
+              <Button type="submit" className="w-full mt-2">Register</Button>
+              <p className="text-center text-sm text-muted-foreground mt-2">
+                Already have an account?{" "}
+                <span
+                  className="text-rugike-accent cursor-pointer hover:underline"
+                  onClick={() => setIsRegistering(false)}
+                >
+                  Login here
+                </span>
+              </p>
+            </form>
+          )}
         </CardContent>
 
         <CardFooter className="flex justify-center">
