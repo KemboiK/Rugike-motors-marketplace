@@ -1,14 +1,16 @@
-
+import { useEffect, useState } from "react";
 import AdminNavigation from "@/components/AdminNavigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Link } from "react-router-dom";
 import Chatbot from "@/components/Chatbot";
-import { Car, Users, User, Settings } from "lucide-react";
+import { Car, Users, User, Settings, Loader2 } from "lucide-react";
 
 const AdminDashboard = () => {
-  // Sample data for charts
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
   const salesData = [
     { name: 'Jan', sales: 12 },
     { name: 'Feb', sales: 19 },
@@ -27,10 +29,34 @@ const AdminDashboard = () => {
     { name: 'Jun', customers: 145, sellers: 40 },
   ];
 
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        const response = await fetch("http://127.0.0.1:8000/api/admin/stats/", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setStats(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch stats", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100">
       <AdminNavigation />
-      
+
       <main className="container-custom py-8">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
@@ -43,49 +69,59 @@ const AdminDashboard = () => {
             </Button>
           </div>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-gray-500 text-sm font-medium">TOTAL SALES</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">123</div>
-              <p className="text-green-500 text-sm mt-2">+12% from last month</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-gray-500 text-sm font-medium">TOTAL CUSTOMERS</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">618</div>
-              <p className="text-green-500 text-sm mt-2">+20 new customers</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-gray-500 text-sm font-medium">TOTAL SELLERS</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">45</div>
-              <p className="text-green-500 text-sm mt-2">+5 new sellers</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-gray-500 text-sm font-medium">TOTAL REVENUE</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">$1.2M</div>
-              <p className="text-green-500 text-sm mt-2">+15% from last month</p>
-            </CardContent>
-          </Card>
-        </div>
-        
+
+        {/* Stats Cards */}
+        {loading ? (
+          <div className="flex justify-center items-center h-32">
+            <Loader2 className="h-8 w-8 animate-spin text-rugike-primary" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-gray-500 text-sm font-medium">TOTAL CARS</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{stats?.total_cars ?? 0}</div>
+                <p className="text-yellow-500 text-sm mt-2">{stats?.pending_cars ?? 0} pending approval</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-gray-500 text-sm font-medium">TOTAL CUSTOMERS</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{stats?.total_customers ?? 0}</div>
+                <p className="text-green-500 text-sm mt-2">{stats?.active_customers ?? 0} active</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-gray-500 text-sm font-medium">TOTAL SELLERS</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{stats?.total_sellers ?? 0}</div>
+                <p className="text-green-500 text-sm mt-2">{stats?.active_sellers ?? 0} active</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-gray-500 text-sm font-medium">TOTAL REVENUE</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">
+                  KES {Number(stats?.total_revenue ?? 0).toLocaleString()}
+                </div>
+                <p className="text-green-500 text-sm mt-2">From approved cars</p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Charts */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Card>
             <CardHeader>
@@ -107,7 +143,7 @@ const AdminDashboard = () => {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>User Registration</CardTitle>
@@ -130,7 +166,8 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
         </div>
-        
+
+        {/* Quick Actions */}
         <Card>
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
