@@ -5,13 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 interface Car {
   id: number;
   name: string;
-  seller: string;
+  seller: any;
   price: string;
   status: string;
   date: string;
@@ -21,129 +23,108 @@ const Cars = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [allCars, setAllCars] = useState<Car[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const token = localStorage.getItem("accessToken");
+
   useEffect(() => {
-    setLoading(true);
-    fetch("http://localhost:8000/api/cars/") 
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch cars");
-        return res.json();
-      })
-      .then((data) => {
-        // Adapt data mapping if backend fields differ
-        const carsData = data.map((car: any) => ({
-          id: car.id,
-          name: car.name,
-          seller: car.seller_name || car.seller,  // adjust to your API response
-          price: car.price,
-          status: car.status,
-          date: new Date(car.created_at).toISOString().split("T")[0], // format to YYYY-MM-DD
-        }));
-        setAllCars(carsData);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
+    fetchCars();
   }, []);
 
-  // Filter cars based on search and status
+  const fetchCars = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/cars/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) throw new Error("Failed to fetch cars");
+      const data = await response.json();
+      const carsData = data.map((car: any) => ({
+        id: car.id,
+        name: car.name,
+        seller: car.seller,
+        price: car.price,
+        status: car.status,
+        date: new Date(car.created_at).toISOString().split("T")[0],
+      }));
+      setAllCars(carsData);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const filteredCars = allCars.filter((car) => {
+    const sellerName = typeof car.seller === 'object' ? car.seller?.name : String(car.seller);
     const matchesSearch =
       car.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      car.seller.toLowerCase().includes(searchTerm.toLowerCase());
+      sellerName?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || car.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
-  const handleDownloadPDFFromAPI = async () => {
-  try {
-    const token = localStorage.getItem("accessToken");
-
-    const response = await fetch("http://localhost:8000/api/cars/download/pdf/", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to download PDF");
-    }
-
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "car_list.pdf";
-    link.click();
-
-    window.URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error("Error downloading PDF:", error);
-  }
-};
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "approved":
-        return <Badge className="bg-green-500">Approved</Badge>;
-      case "pending":
-        return <Badge className="bg-yellow-500">Pending</Badge>;
-      case "rejected":
-        return <Badge className="bg-red-500">Rejected</Badge>;
-      default:
-        return <Badge>Unknown</Badge>;
+  const handleDownloadPDF = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/cars/download/pdf/", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!response.ok) throw new Error("Failed to download PDF");
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "car_list.pdf";
+      link.click();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      toast.error("Failed to download PDF");
     }
   };
 
   const handleApprove = async (carId: number) => {
-  const token = localStorage.getItem("accessToken");
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/cars/${carId}/approve/`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!response.ok) throw new Error("Failed to approve car");
+      setAllCars((prev) =>
+        prev.map((car) => (car.id === carId ? { ...car, status: "approved" } : car))
+      );
+      toast.success("Car approved successfully!");
+    } catch (error) {
+      toast.error("Failed to approve car");
+    }
+  };
 
-  try {
-    const response = await fetch(`http://localhost:8000/api/cars/${carId}/approve/`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  const handleReject = async (carId: number) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/cars/${carId}/reject/`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!response.ok) throw new Error("Failed to reject car");
+      setAllCars((prev) =>
+        prev.map((car) => (car.id === carId ? { ...car, status: "rejected" } : car))
+      );
+      toast.success("Car rejected.");
+    } catch (error) {
+      toast.error("Failed to reject car");
+    }
+  };
 
-    if (!response.ok) throw new Error("Failed to approve car");
-
-    // Refresh car list after success
-    setAllCars((prev) =>
-      prev.map((car) => (car.id === carId ? { ...car, status: "approved" } : car))
-    );
-  } catch (error) {
-    console.error("Error approving car:", error);
-  }
-};
-
-const handleReject = async (carId: number) => {
-  const token = localStorage.getItem("accessToken");
-
-  try {
-    const response = await fetch(`http://localhost:8000/api/cars/${carId}/reject/`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) throw new Error("Failed to reject car");
-
-    // Refresh car list after success
-    setAllCars((prev) =>
-      prev.map((car) => (car.id === carId ? { ...car, status: "rejected" } : car))
-    );
-  } catch (error) {
-    console.error("Error rejecting car:", error);
-  }
-};
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "approved": return <Badge className="bg-green-500">Approved</Badge>;
+      case "pending": return <Badge className="bg-yellow-500">Pending</Badge>;
+      case "rejected": return <Badge className="bg-red-500">Rejected</Badge>;
+      default: return <Badge>Unknown</Badge>;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -153,8 +134,9 @@ const handleReject = async (carId: number) => {
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-rugike-primary">Car Management</h1>
           <div className="mt-4 md:mt-0">
-            <Button className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90"
-            onClick={handleDownloadPDFFromAPI}
+            <Button
+              className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90"
+              onClick={handleDownloadPDF}
             >
               Download Car List
             </Button>
@@ -185,10 +167,13 @@ const handleReject = async (carId: number) => {
           </Select>
         </div>
 
-        {loading && <p>Loading cars...</p>}
-        {error && <p className="text-red-600">Error: {error}</p>}
-
-        {!loading && !error && (
+        {loading ? (
+          <div className="flex justify-center items-center h-32">
+            <Loader2 className="h-8 w-8 animate-spin text-rugike-primary" />
+          </div>
+        ) : error ? (
+          <p className="text-red-600">Error: {error}</p>
+        ) : (
           <Card>
             <CardHeader>
               <CardTitle>Cars ({filteredCars.length})</CardTitle>
@@ -209,21 +194,31 @@ const handleReject = async (carId: number) => {
                   {filteredCars.map((car) => (
                     <TableRow key={car.id}>
                       <TableCell className="font-medium">{car.name}</TableCell>
-                      <TableCell>{car.seller}</TableCell>
-                      <TableCell>{car.price}</TableCell>
+                      <TableCell>
+                        {typeof car.seller === 'object' ? car.seller?.name : car.seller}
+                      </TableCell>
+                      <TableCell>KES {Number(car.price).toLocaleString()}</TableCell>
                       <TableCell>{getStatusBadge(car.status)}</TableCell>
                       <TableCell>{car.date}</TableCell>
                       <TableCell>
                         <div className="flex space-x-2">
-                          <Button variant="outline" size="sm">
-                            View
+                          <Button variant="outline" size="sm" asChild>
+                            <Link to={`/cars/${car.id}`}>View</Link>
                           </Button>
                           {car.status === "pending" && (
                             <>
-                              <Button className="bg-green-600 hover:bg-green-700" size="sm" onClick={() => handleApprove(car.id)}>
+                              <Button
+                                className="bg-green-600 hover:bg-green-700"
+                                size="sm"
+                                onClick={() => handleApprove(car.id)}
+                              >
                                 Approve
                               </Button>
-                              <Button variant="destructive" size="sm" onClick={() => handleReject(car.id)}>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => handleReject(car.id)}
+                              >
                                 Reject
                               </Button>
                             </>
@@ -232,6 +227,13 @@ const handleReject = async (carId: number) => {
                       </TableCell>
                     </TableRow>
                   ))}
+                  {filteredCars.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                        No cars found.
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </CardContent>

@@ -6,87 +6,91 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
+interface Seller {
+  id: number;
+  name: string;
+  email: string;
+  company: string;
+  total_cars: number;
+  status: string;
+  joinDate: string;
+}
+
 const Sellers = () => {
-  const [sellers, setSellers] = useState([]);
+  const [sellers, setSellers] = useState<Seller[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
 
-  // Fetch sellers from backend
-  const fetchSellers = () => {
+  const token = localStorage.getItem("accessToken");
+
+  const fetchSellers = async () => {
     setLoading(true);
-    fetch("http://localhost:8000/api/sellers/sellers/")
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch sellers");
-        return res.json();
-      })
-      .then((data) => {
-        setSellers(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/sellers/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+      if (!response.ok) throw new Error("Failed to fetch sellers");
+      const data = await response.json();
+      setSellers(data);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchSellers();
   }, []);
 
-  const updateSellerStatus = async (id, action) => {
+  const updateSellerStatus = async (id: number, action: string) => {
     try {
-      const token = localStorage.getItem("accessToken");
-      const res = await fetch(`http://localhost:8000/api/sellers/sellers/${id}/${action}/`, {
+      const response = await fetch(`http://127.0.0.1:8000/api/sellers/${id}/${action}/`, {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
-      if (!res.ok) throw new Error(`Failed to ${action} seller`);
+      if (!response.ok) throw new Error(`Failed to ${action} seller`);
       setSellers((prev) =>
         prev.map((s) =>
-          s.id === id ? { ...s, status: action === "approve" || action === "activate" ? "active" : "inactive" } : s
+          s.id === id
+            ? { ...s, status: action === "approve" || action === "activate" ? "active" : "inactive" }
+            : s
         )
       );
-
       toast.success(`Seller ${action === "approve" ? "approved" : action + "d"} successfully!`);
-    } catch (err) {
+    } catch (err: any) {
       toast.error(err.message || `Failed to ${action} seller`);
     }
   };
 
   const filteredSellers = sellers.filter(
     (seller) =>
-      seller.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      seller.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      seller.company.toLowerCase().includes(searchTerm.toLowerCase())
+      seller.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      seller.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      seller.company?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status: string) => {
     switch (status) {
-      case "active":
-        return <Badge className="bg-green-500">Active</Badge>;
-      case "inactive":
-        return <Badge className="bg-gray-500">Inactive</Badge>;
-      case "pending":
-        return <Badge className="bg-yellow-500">Pending</Badge>;
-      default:
-        return <Badge>Unknown</Badge>;
+      case "active": return <Badge className="bg-green-500">Active</Badge>;
+      case "inactive": return <Badge className="bg-gray-500">Inactive</Badge>;
+      case "pending": return <Badge className="bg-yellow-500">Pending</Badge>;
+      default: return <Badge>Unknown</Badge>;
     }
   };
 
-  const getInitials = (name) => {
-    return name
-      .split(" ")
-      .map((part) => part[0])
-      .join("")
-      .toUpperCase();
+  const getInitials = (name: string) => {
+    return name?.split(" ").map((part) => part[0]).join("").toUpperCase();
   };
 
   return (
@@ -96,7 +100,10 @@ const Sellers = () => {
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-rugike-primary">Seller Management</h1>
           <div className="mt-4 md:mt-0">
-            <Button className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90" onClick={() => setShowAddForm(true)}>
+            <Button
+              className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90"
+              onClick={() => setShowAddForm(true)}
+            >
               Add New Seller
             </Button>
           </div>
@@ -114,86 +121,96 @@ const Sellers = () => {
           </div>
         </div>
 
-        {loading && <p>Loading sellers...</p>}
-        {error && <p className="text-red-500">{error}</p>}
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Sellers ({filteredSellers.length})</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Seller</TableHead>
-                  <TableHead>Company</TableHead>
-                  <TableHead>Cars</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Join Date</TableHead>
-                  <TableHead>Action</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredSellers.map((seller) => (
-                  <TableRow key={seller.id}>
-                    <TableCell>
-                      <div className="flex items-center space-x-3">
-                        <Avatar>
-                          <AvatarFallback>{getInitials(seller.name)}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="font-medium">{seller.name}</div>
-                          <div className="text-sm text-muted-foreground">{seller.email}</div>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{seller.company}</TableCell>
-                    <TableCell>{seller.total_cars}</TableCell>
-                    <TableCell>{getStatusBadge(seller.status)}</TableCell>
-                    <TableCell>{seller.join_date}</TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <Button variant="outline" size="sm">
-                          View
-                        </Button>
-                        {seller.status === "pending" && (
-                          <Button
-                            className="bg-green-600 hover:bg-green-700"
-                            size="sm"
-                            onClick={() => updateSellerStatus(seller.id, "approve")}
-                          >
-                            Approve
-                          </Button>
-                        )}
-                        {seller.status === "active" && (
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => updateSellerStatus(seller.id, "deactivate")}
-                          >
-                            Deactivate
-                          </Button>
-                        )}
-                        {seller.status === "inactive" && (
-                          <Button
-                            className="bg-green-600 hover:bg-green-700"
-                            size="sm"
-                            onClick={() => updateSellerStatus(seller.id, "activate")}
-                          >
-                            Activate
-                          </Button>
-                        )}
-                      </div>
-                    </TableCell>
+        {loading ? (
+          <div className="flex justify-center items-center h-32">
+            <Loader2 className="h-8 w-8 animate-spin text-rugike-primary" />
+          </div>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : (
+          <Card>
+            <CardHeader>
+              <CardTitle>Sellers ({filteredSellers.length})</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Seller</TableHead>
+                    <TableHead>Company</TableHead>
+                    <TableHead>Cars</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Join Date</TableHead>
+                    <TableHead>Action</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+                </TableHeader>
+                <TableBody>
+                  {filteredSellers.map((seller) => (
+                    <TableRow key={seller.id}>
+                      <TableCell>
+                        <div className="flex items-center space-x-3">
+                          <Avatar>
+                            <AvatarFallback>{getInitials(seller.name)}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <div className="font-medium">{seller.name}</div>
+                            <div className="text-sm text-muted-foreground">{seller.email}</div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>{seller.company}</TableCell>
+                      <TableCell>{seller.total_cars}</TableCell>
+                      <TableCell>{getStatusBadge(seller.status)}</TableCell>
+                      <TableCell>{seller.joinDate}</TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          <Button variant="outline" size="sm">View</Button>
+                          {seller.status === "pending" && (
+                            <Button
+                              className="bg-green-600 hover:bg-green-700"
+                              size="sm"
+                              onClick={() => updateSellerStatus(seller.id, "approve")}
+                            >
+                              Approve
+                            </Button>
+                          )}
+                          {seller.status === "active" && (
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => updateSellerStatus(seller.id, "deactivate")}
+                            >
+                              Deactivate
+                            </Button>
+                          )}
+                          {seller.status === "inactive" && (
+                            <Button
+                              className="bg-green-600 hover:bg-green-700"
+                              size="sm"
+                              onClick={() => updateSellerStatus(seller.id, "activate")}
+                            >
+                              Activate
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {filteredSellers.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                        No sellers found.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
       </main>
 
-      {/* Modal for Add Seller Form */}
+      {/* Add Seller Modal */}
       {showAddForm && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-lg">
@@ -207,12 +224,11 @@ const Sellers = () => {
                   username: formData.get("username"),
                   email: formData.get("email"),
                   password: formData.get("password"),
-                  name: formData.get("name"), 
-                  company: formData.get("company"), 
+                  name: formData.get("name"),
+                  company: formData.get("company"),
                 };
                 try {
-                  const token = localStorage.getItem("accessToken");
-                  const res = await fetch("http://localhost:8000/api/sellers/add/", {
+                  const response = await fetch("http://127.0.0.1:8000/api/sellers/add/", {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",
@@ -220,17 +236,15 @@ const Sellers = () => {
                     },
                     body: JSON.stringify(data),
                   });
-
-                  if (!res.ok) {
-                    const errData = await res.json();
+                  if (!response.ok) {
+                    const errData = await response.json();
                     toast.error(errData.error || "Failed to add seller");
                     return;
                   }
-
                   toast.success("Seller added successfully!");
                   form.reset();
                   setShowAddForm(false);
-                  fetchSellers(); // Refresh list
+                  fetchSellers();
                 } catch (err: any) {
                   toast.error(err.message || "Something went wrong");
                 }
@@ -246,7 +260,7 @@ const Sellers = () => {
                 <Button type="button" variant="ghost" onClick={() => setShowAddForm(false)}>
                   Cancel
                 </Button>
-                <Button type="submit" className="bg-rugike-accent text-white">
+                <Button type="submit" className="bg-rugike-accent text-rugike-primary">
                   Add Seller
                 </Button>
               </div>
