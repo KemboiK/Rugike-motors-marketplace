@@ -10,12 +10,6 @@ import { ArrowRight, Fuel, Gauge, Car, Eye, Search, Loader2 } from "lucide-react
 
 import { useSearchParams } from "react-router-dom";
 
-const [searchParams] = useSearchParams();
-
-useEffect(() => {
-  const filterParam = searchParams.get("filter");
-  if (filterParam) setFilter(filterParam);
-}, [searchParams]);
 const CarListing = () => {
   const [cars, setCars] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,6 +17,12 @@ const CarListing = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
 
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const filterParam = searchParams.get("filter");
+    if (filterParam) setFilter(filterParam);
+  }, [searchParams]);
   useEffect(() => {
     const fetchCars = async () => {
       try {
