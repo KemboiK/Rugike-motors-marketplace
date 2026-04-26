@@ -56,11 +56,11 @@ const Navigation = () => {
                 Cars <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
               </button>
               <div className="absolute z-10 left-0 mt-2 w-56 bg-white rounded-md shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 border border-gray-100">
-                <Link to="#" className="block px-4 py-2 text-sm text-rugike-primary hover:bg-rugike-light hover:text-rugike-accent">Browse All</Link>
-                <Link to="#" className="block px-4 py-2 text-sm text-rugike-primary hover:bg-rugike-light hover:text-rugike-accent">Premium Vehicles</Link>
-                <Link to="#" className="block px-4 py-2 text-sm text-rugike-primary hover:bg-rugike-light hover:text-rugike-accent">Budget Friendly</Link>
+                <Link to="/cars" className="block px-4 py-2 text-sm text-rugike-primary hover:bg-rugike-light hover:text-rugike-accent">Browse All</Link>
+                <Link to="/cars?filter=premium" className="block px-4 py-2 text-sm text-rugike-primary hover:bg-rugike-light hover:text-rugike-accent">Premium Vehicles</Link>
+                <Link to="/cars?filter=budget" className="block px-4 py-2 text-sm text-rugike-primary hover:bg-rugike-light hover:text-rugike-accent">Budget Friendly</Link>
                 <div className="border-t border-gray-100 my-1"></div>
-                <Link to="#" className="block px-4 py-2 text-sm text-rugike-primary hover:bg-rugike-light hover:text-rugike-accent flex items-center">
+                <Link to="/cars?filter=new" className="block px-4 py-2 text-sm text-rugike-primary hover:bg-rugike-light hover:text-rugike-accent flex items-center">
                   <Car className="mr-2 h-4 w-4" /> New Arrivals
                 </Link>
               </div>
@@ -162,9 +162,9 @@ const Navigation = () => {
                   <ChevronDown className="h-4 w-4" />
                 </div>
                 <div className="pl-4 space-y-2 border-l-2 border-gray-100 ml-2">
-                  <Link to="#" className="block px-2 py-1.5 text-rugike-primary hover:bg-gray-50 rounded">Browse All</Link>
-                  <Link to="#" className="block px-2 py-1.5 text-rugike-primary hover:bg-gray-50 rounded">Premium Vehicles</Link>
-                  <Link to="#" className="block px-2 py-1.5 text-rugike-primary hover:bg-gray-50 rounded">Budget Friendly</Link>
+                  <Link to="/cars" className="block px-2 py-1.5 text-rugike-primary hover:bg-gray-50 rounded">Browse All</Link>
+                  <Link to="/cars?filter=premium" className="block px-2 py-1.5 text-rugike-primary hover:bg-gray-50 rounded">Premium Vehicles</Link>
+                  <Link to="/cars?filter=budget" className="block px-2 py-1.5 text-rugike-primary hover:bg-gray-50 rounded">Budget Friendly</Link>
                 </div>
               </div>
               

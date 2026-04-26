@@ -19,6 +19,7 @@ import Profile from "./pages/seller/Profile";
 import CarDetails from "./pages/customer/CarDetails";
 import ContactUs from "./pages/customer/ContactUs";
 import Login from "./pages/auth/Login";
+import CarListing from "./pages/customer/CarListing";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,8 @@ const App = () => (
           <Route path="/seller/add-car" element={<AddCar />} />
           <Route path="/seller/my-cars" element={<MyCars />} />
           <Route path="/seller/profile" element={<Profile />} />
+
+          <Route path="/cars" element={<CarListing />} />
           
           {/* Catch-all Route */}
           <Route path="*" element={<NotFound />} />
