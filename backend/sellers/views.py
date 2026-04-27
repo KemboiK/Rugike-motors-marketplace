@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
@@ -36,6 +36,7 @@ class SellerViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def register_seller(request):
     serializer = SellerCreateSerializer(data=request.data)
     if serializer.is_valid():
@@ -45,6 +46,7 @@ def register_seller(request):
 
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def register_customer(request):
     from customers.models import Customer
     from django.contrib.auth.models import User
