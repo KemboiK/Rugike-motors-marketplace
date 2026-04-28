@@ -9,7 +9,7 @@ const InvestorBacked = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <Badge className="mb-4 bg-rugike-accent/20 text-rugike-primary hover:bg-rugike-accent/30 py-1.5 px-3">
-              El-ventures Backed
+              K-El-ventures Backed
             </Badge>
             
             <h2 className="text-3xl md:text-4xl font-bold text-rugike-primary mb-6">
@@ -44,8 +44,8 @@ const InvestorBacked = () => {
             {/* Main image */}
             <div className="rounded-lg overflow-hidden shadow-xl relative z-10">
               <img 
-                src="https://images.unsplash.com/photo-1642543492276-e8e7a482130b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                alt="El-ventures Investment Meeting"
+                src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800"
+                alt="K-El-ventures Investment Meeting"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -61,7 +61,7 @@ const InvestorBacked = () => {
                   <span className="text-rugike-primary font-bold text-sm">EV</span>
                 </div>
                 <div className="ml-3">
-                  <p className="font-semibold text-rugike-primary">El-ventures</p>
+                  <p className="font-semibold text-rugike-primary">K-El-ventures</p>
                   <p className="text-xs text-rugike-secondary">Strategic Investment Partner</p>
                 </div>
               </div>

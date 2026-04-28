@@ -41,7 +41,7 @@ const Footer = () => {
               A next-generation car marketplace designed to connect buyers and sellers with speed, trust, and transparency.
             </p>
             <p className="text-rugike-secondary text-sm">
-              Proudly sponsored by <span className="text-white">El-ventures</span>
+              Proudly sponsored by <span className="text-white">K-El-ventures</span>
             </p>
           </div>
           
@@ -77,11 +77,11 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4">Contact</h4>
             <address className="not-italic text-rugike-secondary">
-              <p className="mb-2">1234 Motors Avenue</p>
-              <p className="mb-2">New York, NY 10001</p>
-              <p className="mb-4">United States</p>
+              <p className="mb-2">RUGIKE Motors Avenue</p>
+              <p className="mb-2">Nairobi, Kenya</p>
+              <p className="mb-4">Kenya</p>
               <p className="mb-2">info@rugikemotors.com</p>
-              <p>+1 (555) 123-4567</p>
+              <p>+(254)100508309 </p>
             </address>
           </div>
         </div>

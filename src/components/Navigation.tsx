@@ -1,20 +1,29 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown, User, Car, Settings, Search } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 
 const Navigation = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
-  
+  const navigate = useNavigate();
+
   const isActive = (path: string) => {
     return location.pathname === path;
   };
-  
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      navigate(`/cars?search=${encodeURIComponent(searchQuery.trim())}`);
+      setShowSearch(false);
+      setSearchQuery("");
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 20) {
@@ -23,11 +32,11 @@ const Navigation = () => {
         setIsScrolled(false);
       }
     };
-    
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  
+
   return (
     <header className={`sticky top-0 z-40 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-md' : 'bg-white shadow-sm'}`}>
       <nav className="container-custom py-4">
@@ -40,11 +49,11 @@ const Navigation = () => {
               </span>
             </Link>
           </div>
-          
+
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className={`text-rugike-primary font-medium hover:text-rugike-accent transition-colors relative ${
                 isActive('/') ? 'text-rugike-accent after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-[3px] after:bg-rugike-accent after:rounded-t-md' : ''
               }`}
@@ -65,16 +74,16 @@ const Navigation = () => {
                 </Link>
               </div>
             </div>
-            <Link 
-              to="/cars/1" 
+            <Link
+              to="/cars/1"
               className={`text-rugike-primary font-medium hover:text-rugike-accent transition-colors relative ${
                 isActive('/cars/1') ? 'text-rugike-accent after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-[3px] after:bg-rugike-accent after:rounded-t-md' : ''
               }`}
             >
               Car Details
             </Link>
-            <Link 
-              to="/contact" 
+            <Link
+              to="/contact"
               className={`text-rugike-primary font-medium hover:text-rugike-accent transition-colors relative ${
                 isActive('/contact') ? 'text-rugike-accent after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-[3px] after:bg-rugike-accent after:rounded-t-md' : ''
               }`}
@@ -82,52 +91,59 @@ const Navigation = () => {
               Contact
             </Link>
           </div>
-          
+
           {/* Search and CTA Buttons */}
           <div className="hidden md:flex items-center space-x-2">
             {showSearch ? (
               <div className="relative animate-fade-in">
-                <Input placeholder="Search for cars..." className="pl-9 pr-4 h-9 w-56 bg-gray-50" />
+                <Input
+                  placeholder="Search for cars..."
+                  className="pl-9 pr-4 h-9 w-56 bg-gray-50"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleSearch}
+                  autoFocus
+                />
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0"
-                  onClick={() => setShowSearch(false)}
+                  onClick={() => { setShowSearch(false); setSearchQuery(""); }}
                 >
                   <X className="h-3 w-3" />
                 </Button>
               </div>
             ) : (
-              <Button 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                variant="ghost"
+                size="icon"
                 className="text-rugike-primary hover:bg-gray-100"
                 onClick={() => setShowSearch(true)}
               >
                 <Search className="h-5 w-5" />
               </Button>
             )}
-            
+
             <Link to="/auth/login">
               <Button className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90 shadow-sm">
                 <User className="mr-2 h-4 w-4" /> Login / Register
               </Button>
             </Link>
           </div>
-          
+
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center space-x-2">
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               className="text-rugike-primary hover:bg-gray-100"
               onClick={() => setShowSearch(!showSearch)}
             >
               <Search className="h-5 w-5" />
             </Button>
-            
-            <button 
+
+            <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="text-rugike-primary p-2"
             >
@@ -139,23 +155,30 @@ const Navigation = () => {
             </button>
           </div>
         </div>
-        
+
         {/* Mobile Search */}
         {showSearch && (
           <div className="md:hidden py-2 border-t border-gray-100 mt-2 animate-fade-in">
             <div className="relative">
-              <Input placeholder="Search for cars..." className="pl-9 pr-4 h-9 w-full bg-gray-50" />
+              <Input
+                placeholder="Search for cars..."
+                className="pl-9 pr-4 h-9 w-full bg-gray-50"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleSearch}
+                autoFocus
+              />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             </div>
           </div>
         )}
-        
+
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-100 animate-slide-up">
             <div className="flex flex-col space-y-4">
               <Link to="/" className="text-rugike-primary font-medium px-2 py-1.5 rounded hover:bg-gray-50">Home</Link>
-              
+
               <div className="space-y-2">
                 <div className="flex items-center justify-between px-2 py-1.5 text-rugike-primary font-medium">
                   <span>Cars</span>
@@ -167,10 +190,10 @@ const Navigation = () => {
                   <Link to="/cars?filter=budget" className="block px-2 py-1.5 text-rugike-primary hover:bg-gray-50 rounded">Budget Friendly</Link>
                 </div>
               </div>
-              
+
               <Link to="/cars/1" className="text-rugike-primary font-medium px-2 py-1.5 rounded hover:bg-gray-50">Car Details</Link>
               <Link to="/contact" className="text-rugike-primary font-medium px-2 py-1.5 rounded hover:bg-gray-50">Contact</Link>
-              
+
               <div className="pt-2 border-t border-gray-100">
                 <Link to="/auth/login" className="block">
                   <Button className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90 w-full">

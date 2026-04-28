@@ -22,7 +22,12 @@ const CarListing = () => {
   useEffect(() => {
     const filterParam = searchParams.get("filter");
     if (filterParam) setFilter(filterParam);
+
+    // Reads ?search= from Navigation
+    const searchParam = searchParams.get("search");
+    if (searchParam) setSearchTerm(searchParam);
   }, [searchParams]);
+
   useEffect(() => {
     const fetchCars = async () => {
       try {

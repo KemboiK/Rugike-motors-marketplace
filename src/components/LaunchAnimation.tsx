@@ -67,7 +67,7 @@ const LaunchAnimation = ({ onAnimationComplete }: LaunchAnimationProps) => {
             PROUDLY SPONSORED BY
           </p>
           <p className="text-white text-xl font-semibold tracking-wider">
-            EL-VENTURES
+            K-EL-VENTURES
           </p>
         </div>
       </div>

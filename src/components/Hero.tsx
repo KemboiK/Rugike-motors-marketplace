@@ -16,7 +16,7 @@ const Hero = () => {
             <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
               <span className="bg-rugike-accent text-rugike-primary text-xs font-semibold px-3 py-1 rounded-full">NEW</span>
               <p className="ml-3 text-sm text-white">
-                Backed by El-ventures for trusted quality
+                Backed by K-El-ventures for trusted quality
               </p>
             </div>
           </div>

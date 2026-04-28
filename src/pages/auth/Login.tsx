@@ -2,18 +2,20 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { User, Users, Car } from "lucide-react";
+import { User, Car, ArrowLeft } from "lucide-react";
+
+type View = "login" | "choose" | "register-customer" | "register-seller";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [view, setView] = useState<View>("login");
+
+  // Login fields
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("customer");
-  const [isRegistering, setIsRegistering] = useState(false);
 
   // Registration fields
   const [regName, setRegName] = useState("");
@@ -23,93 +25,79 @@ const Login = () => {
   const [regPhone, setRegPhone] = useState("");
   const [regCompany, setRegCompany] = useState("");
 
+  const resetRegFields = () => {
+    setRegName(""); setRegEmail(""); setRegUsername("");
+    setRegPassword(""); setRegPhone(""); setRegCompany("");
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!username || !password) {
       toast.error("Please enter both username and password");
       return;
     }
-
     try {
       const response = await fetch("http://127.0.0.1:8000/api/token/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
-        const actualRole = data.role;
-
-        if (role !== actualRole && !(role === 'admin' && actualRole === 'admin')) {
-          toast.error(`Invalid credentials for ${role} login`);
-          return;
-        }
-
         localStorage.setItem("accessToken", data.access);
         localStorage.setItem("refreshToken", data.refresh);
-        localStorage.setItem("userRole", actualRole);
+        localStorage.setItem("userRole", data.role);
         localStorage.setItem("username", data.username);
         localStorage.setItem("userId", data.id);
-
         toast.success(`Welcome back, ${data.username}!`);
-
-        if (actualRole === "customer") {
-          navigate("/");
-        } else {
-          navigate(`/${actualRole}/dashboard`);
-        }
-
+        if (data.role === "admin") navigate("/admin/dashboard");
+        else if (data.role === "seller") navigate("/seller/dashboard");
+        else navigate("/");
       } else {
-        // 🔥 ONLY CHANGE: better message for unapproved sellers
         if (data.detail === "No active account found with the given credentials") {
-          toast.error("Your account is not approved yet. Please wait for admin approval.");
+          toast.error("Account not approved yet or credentials invalid.");
         } else {
-          toast.error("Invalid credentials");
+          toast.error("Invalid username or password.");
         }
       }
-
-    } catch (error) {
-      console.error("Login error", error);
+    } catch {
       toast.error("Login failed. Please check your connection.");
     }
   };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!regName || !regEmail || !regUsername || !regPassword) {
       toast.error("Please fill in all required fields");
       return;
     }
-
+    const isSeller = view === "register-seller";
+    const endpoint = isSeller
+      ? "http://127.0.0.1:8000/api/sellers/register/"
+      : "http://127.0.0.1:8000/api/sellers/register/customer/";
+    const body = isSeller
+      ? { name: regName, email: regEmail, username: regUsername, password: regPassword, phone: regPhone, company: regCompany }
+      : { name: regName, email: regEmail, username: regUsername, password: regPassword, phone: regPhone };
     try {
-      const endpoint = role === "seller"
-        ? "http://127.0.0.1:8000/api/sellers/register/"
-        : "http://127.0.0.1:8000/api/sellers/register/customer/";
-
-      const body = role === "seller"
-        ? { name: regName, email: regEmail, username: regUsername, password: regPassword, phone: regPhone, company: regCompany }
-        : { name: regName, email: regEmail, username: regUsername, password: regPassword, phone: regPhone };
-
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-
       if (response.ok) {
-        toast.success("Registration successful! Please login.");
-        setIsRegistering(false);
+        toast.success(
+          isSeller
+            ? "Registration submitted! Await admin approval before logging in."
+            : "Registration successful! You can now log in."
+        );
+        resetRegFields();
+        setView("login");
       } else {
         const data = await response.json();
         const errorMsg = Object.values(data).flat().join(", ");
         toast.error(errorMsg || "Registration failed");
       }
-    } catch (error) {
-      console.error("Registration error", error);
+    } catch {
       toast.error("Registration failed. Please check your connection.");
     }
   };
@@ -117,164 +105,186 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rugike-primary to-rugike-dark p-4">
       <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">
-            <span className="text-rugike-accent">RUGIKE</span> Motors
-          </CardTitle>
-          <CardDescription>
-            {isRegistering ? "Create your account" : "Login to access your account"}
-          </CardDescription>
-        </CardHeader>
 
-        <CardContent>
-          <Tabs defaultValue="customer" onValueChange={setRole}>
-            <TabsList className="grid grid-cols-3 mb-6">
-              <TabsTrigger value="customer" className="flex items-center gap-2">
-                <User className="h-4 w-4" />
-                Customer
-              </TabsTrigger>
-              <TabsTrigger value="seller" className="flex items-center gap-2">
-                <Car className="h-4 w-4" />
-                Seller
-              </TabsTrigger>
-              <TabsTrigger value="admin" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                Admin
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="customer">
-              <p className="text-sm text-muted-foreground mb-4">
-                Explore our premium car marketplace and find your dream car.
-              </p>
-            </TabsContent>
-            <TabsContent value="seller">
-              <p className="text-sm text-muted-foreground mb-4">
-                List your cars and manage your inventory.
-              </p>
-            </TabsContent>
-            <TabsContent value="admin">
-              <p className="text-sm text-muted-foreground mb-4">
-                Admin access is restricted. Use your admin credentials to login.
-              </p>
-            </TabsContent>
-          </Tabs>
-
-          {!isRegistering && (
-            <form onSubmit={handleLogin} className="mt-4 space-y-4">
-              <div>
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  placeholder="Enter your username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              <Button type="submit" className="w-full mt-2">Login</Button>
-              {role !== "admin" && (
-                <p className="text-center text-sm text-muted-foreground mt-2">
-                  Don't have an account?{" "}
-                  <span
-                    className="text-rugike-accent cursor-pointer hover:underline"
-                    onClick={() => setIsRegistering(true)}
-                  >
-                    Register here
-                  </span>
-                </p>
-              )}
-            </form>
-          )}
-
-          {isRegistering && role !== "admin" && (
-            <form onSubmit={handleRegister} className="mt-4 space-y-4">
-              <div>
-                <Label htmlFor="regName">Full Name *</Label>
-                <Input
-                  id="regName"
-                  placeholder="John Doe"
-                  value={regName}
-                  onChange={(e) => setRegName(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="regEmail">Email *</Label>
-                <Input
-                  id="regEmail"
-                  type="email"
-                  placeholder="john@example.com"
-                  value={regEmail}
-                  onChange={(e) => setRegEmail(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="regUsername">Username *</Label>
-                <Input
-                  id="regUsername"
-                  placeholder="johndoe"
-                  value={regUsername}
-                  onChange={(e) => setRegUsername(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="regPassword">Password *</Label>
-                <Input
-                  id="regPassword"
-                  type="password"
-                  placeholder="••••••••"
-                  value={regPassword}
-                  onChange={(e) => setRegPassword(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="regPhone">Phone</Label>
-                <Input
-                  id="regPhone"
-                  placeholder="+1 (555) 000-0000"
-                  value={regPhone}
-                  onChange={(e) => setRegPhone(e.target.value)}
-                />
-              </div>
-              {role === "seller" && (
+        {/* LOGIN VIEW */}
+        {view === "login" && (
+          <>
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl">
+                <span className="text-rugike-accent">RUGIKE</span> Motors
+              </CardTitle>
+              <CardDescription>Enter your credentials to continue</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleLogin} className="space-y-4">
                 <div>
-                  <Label htmlFor="regCompany">Company</Label>
+                  <Label htmlFor="username">Username</Label>
                   <Input
-                    id="regCompany"
-                    placeholder="Your company name"
-                    value={regCompany}
-                    onChange={(e) => setRegCompany(e.target.value)}
+                    id="username"
+                    placeholder="Enter your username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>
-              )}
-              <Button type="submit" className="w-full mt-2">Register</Button>
-              <p className="text-center text-sm text-muted-foreground mt-2">
-                Already have an account?{" "}
-                <span
-                  className="text-rugike-accent cursor-pointer hover:underline"
-                  onClick={() => setIsRegistering(false)}
-                >
-                  Login here
-                </span>
-              </p>
-            </form>
-          )}
-        </CardContent>
+                <div>
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+                <Button type="submit" className="w-full mt-2">Login</Button>
+                <p className="text-center text-sm text-muted-foreground mt-2">
+                  New here?{" "}
+                  <span
+                    className="text-rugike-accent cursor-pointer hover:underline"
+                    onClick={() => setView("choose")}
+                  >
+                    Create an account
+                  </span>
+                </p>
+              </form>
+            </CardContent>
+            <CardFooter className="flex justify-center">
+              <Button variant="link" onClick={() => navigate("/")} className="text-sm">
+                Return to Homepage
+              </Button>
+            </CardFooter>
+          </>
+        )}
 
-        <CardFooter className="flex justify-center">
-          <Button variant="link" onClick={() => navigate("/")} className="text-sm">
-            Return to Homepage
-          </Button>
-        </CardFooter>
+        {/* CHOOSE ROLE VIEW */}
+        {view === "choose" && (
+          <>
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl">
+                <span className="text-rugike-accent">RUGIKE</span> Motors
+              </CardTitle>
+              <CardDescription>Register as a customer or seller?</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button
+                className="w-full h-16 text-lg bg-rugike-primary hover:bg-rugike-dark flex items-center justify-center gap-3"
+                onClick={() => setView("register-customer")}
+              >
+                <User className="h-5 w-5" /> I'm a Customer
+              </Button>
+              <Button
+                className="w-full h-16 text-lg bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90 flex items-center justify-center gap-3"
+                onClick={() => setView("register-seller")}
+              >
+                <Car className="h-5 w-5" /> I'm a Seller
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full flex items-center gap-2"
+                onClick={() => setView("login")}
+              >
+                <ArrowLeft className="h-4 w-4" /> Back to Login
+              </Button>
+            </CardContent>
+          </>
+        )}
+
+        {/* REGISTER CUSTOMER VIEW */}
+        {view === "register-customer" && (
+          <>
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl">
+                <span className="text-rugike-accent">RUGIKE</span> Motors
+              </CardTitle>
+              <CardDescription>Create your customer account</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleRegister} className="space-y-4">
+                <div>
+                  <Label>Full Name *</Label>
+                  <Input placeholder="John Doe" value={regName} onChange={(e) => setRegName(e.target.value)} />
+                </div>
+                <div>
+                  <Label>Email *</Label>
+                  <Input type="email" placeholder="john@example.com" value={regEmail} onChange={(e) => setRegEmail(e.target.value)} />
+                </div>
+                <div>
+                  <Label>Username *</Label>
+                  <Input placeholder="johndoe" value={regUsername} onChange={(e) => setRegUsername(e.target.value)} />
+                </div>
+                <div>
+                  <Label>Password *</Label>
+                  <Input type="password" placeholder="••••••••" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} />
+                </div>
+                <div>
+                  <Label>Phone</Label>
+                  <Input placeholder="+254 700 000000" value={regPhone} onChange={(e) => setRegPhone(e.target.value)} />
+                </div>
+                <Button type="submit" className="w-full">Register</Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="w-full flex items-center gap-2"
+                  onClick={() => { resetRegFields(); setView("choose"); }}
+                >
+                  <ArrowLeft className="h-4 w-4" /> Back
+                </Button>
+              </form>
+            </CardContent>
+          </>
+        )}
+
+        {/* REGISTER SELLER VIEW */}
+        {view === "register-seller" && (
+          <>
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl">
+                <span className="text-rugike-accent">RUGIKE</span> Motors
+              </CardTitle>
+              <CardDescription>Apply to become a seller</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleRegister} className="space-y-4">
+                <div>
+                  <Label>Full Name *</Label>
+                  <Input placeholder="John Doe" value={regName} onChange={(e) => setRegName(e.target.value)} />
+                </div>
+                <div>
+                  <Label>Email *</Label>
+                  <Input type="email" placeholder="john@example.com" value={regEmail} onChange={(e) => setRegEmail(e.target.value)} />
+                </div>
+                <div>
+                  <Label>Username *</Label>
+                  <Input placeholder="johndoe" value={regUsername} onChange={(e) => setRegUsername(e.target.value)} />
+                </div>
+                <div>
+                  <Label>Password *</Label>
+                  <Input type="password" placeholder="••••••••" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} />
+                </div>
+                <div>
+                  <Label>Phone</Label>
+                  <Input placeholder="+254 700 000000" value={regPhone} onChange={(e) => setRegPhone(e.target.value)} />
+                </div>
+                <div>
+                  <Label>Company Name</Label>
+                  <Input placeholder="Your dealership name" value={regCompany} onChange={(e) => setRegCompany(e.target.value)} />
+                </div>
+                <Button type="submit" className="w-full bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90">
+                  Submit Application
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="w-full flex items-center gap-2"
+                  onClick={() => { resetRegFields(); setView("choose"); }}
+                >
+                  <ArrowLeft className="h-4 w-4" /> Back
+                </Button>
+              </form>
+            </CardContent>
+          </>
+        )}
+
       </Card>
     </div>
   );

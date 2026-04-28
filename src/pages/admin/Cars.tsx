@@ -35,7 +35,7 @@ const Cars = () => {
   const fetchCars = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/cars/", {
+      const response = await fetch("http://127.0.0.1:8000/api/cars/add/", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
