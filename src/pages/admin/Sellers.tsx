@@ -31,7 +31,7 @@ const Sellers = () => {
   const fetchSellers = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/sellers/", {
+      const response = await fetch("http://127.0.0.1:8000/api/sellers/manage/", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -52,7 +52,7 @@ const Sellers = () => {
 
   const updateSellerStatus = async (id: number, action: string) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/sellers/${id}/${action}/`, {
+      const response = await fetch(`http://127.0.0.1:8000/api/sellers/manage/${id}/${action}/`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

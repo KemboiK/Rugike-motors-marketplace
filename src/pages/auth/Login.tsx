@@ -38,13 +38,11 @@ const Login = () => {
         body: JSON.stringify({ username, password }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      const data = await response.json();
 
-        // Use role from backend not from tab
+      if (response.ok) {
         const actualRole = data.role;
 
-        // Check if role matches selected tab
         if (role !== actualRole && !(role === 'admin' && actualRole === 'admin')) {
           toast.error(`Invalid credentials for ${role} login`);
           return;
@@ -63,9 +61,16 @@ const Login = () => {
         } else {
           navigate(`/${actualRole}/dashboard`);
         }
+
       } else {
-        toast.error("Invalid credentials");
+        // 🔥 ONLY CHANGE: better message for unapproved sellers
+        if (data.detail === "No active account found with the given credentials") {
+          toast.error("Your account is not approved yet. Please wait for admin approval.");
+        } else {
+          toast.error("Invalid credentials");
+        }
       }
+
     } catch (error) {
       console.error("Login error", error);
       toast.error("Login failed. Please check your connection.");
@@ -155,7 +160,6 @@ const Login = () => {
             </TabsContent>
           </Tabs>
 
-          {/* LOGIN FORM */}
           {!isRegistering && (
             <form onSubmit={handleLogin} className="mt-4 space-y-4">
               <div>
@@ -192,7 +196,6 @@ const Login = () => {
             </form>
           )}
 
-          {/* REGISTRATION FORM */}
           {isRegistering && role !== "admin" && (
             <form onSubmit={handleRegister} className="mt-4 space-y-4">
               <div>

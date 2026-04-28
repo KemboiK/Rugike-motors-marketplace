@@ -2,14 +2,18 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Seller
 
+
 class SellerSerializer(serializers.ModelSerializer):
     total_cars = serializers.SerializerMethodField()
     joinDate = serializers.DateField(source='join_date', read_only=True)
 
     class Meta:
         model = Seller
-        fields = ['id', 'name', 'email', 'company', 'phone', 'website', 
-                  'address', 'bio', 'status', 'total_cars', 'joinDate']
+        fields = [
+            'id', 'name', 'email', 'company', 'phone',
+            'website', 'address', 'bio', 'status',
+            'total_cars', 'joinDate'
+        ]
 
     def get_total_cars(self, obj):
         return obj.cars.count()
@@ -34,12 +38,14 @@ class SellerCreateSerializer(serializers.Serializer):
         return value
 
     def create(self, validated_data):
+        # 🔥 IMPORTANT: user cannot login yet
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
-            is_active=True
+            is_active=False
         )
+
         seller = Seller.objects.create(
             user=user,
             name=validated_data['name'],
@@ -48,6 +54,7 @@ class SellerCreateSerializer(serializers.Serializer):
             phone=validated_data.get('phone', ''),
             status='pending'
         )
+
         return seller
 
 

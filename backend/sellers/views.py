@@ -17,6 +17,11 @@ class SellerViewSet(viewsets.ModelViewSet):
     def approve(self, request, pk=None):
         seller = self.get_object()
         seller.status = 'active'
+
+        # 🔥 Allow login after approval
+        seller.user.is_active = True
+        seller.user.save()
+
         seller.save()
         return Response({'status': 'seller approved'}, status=status.HTTP_200_OK)
 
@@ -24,6 +29,10 @@ class SellerViewSet(viewsets.ModelViewSet):
     def activate(self, request, pk=None):
         seller = self.get_object()
         seller.status = 'active'
+
+        seller.user.is_active = True
+        seller.user.save()
+
         seller.save()
         return Response({'status': 'seller activated'}, status=status.HTTP_200_OK)
 
@@ -31,6 +40,11 @@ class SellerViewSet(viewsets.ModelViewSet):
     def deactivate(self, request, pk=None):
         seller = self.get_object()
         seller.status = 'inactive'
+
+        # 🔥 Block login when deactivated
+        seller.user.is_active = False
+        seller.user.save()
+
         seller.save()
         return Response({'status': 'seller deactivated'}, status=status.HTTP_200_OK)
 
@@ -41,7 +55,10 @@ def register_seller(request):
     serializer = SellerCreateSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return Response({'message': 'Seller registered successfully'}, status=status.HTTP_201_CREATED)
+        return Response(
+            {'message': 'Registration successful. Await admin approval.'},
+            status=status.HTTP_201_CREATED
+        )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -49,7 +66,6 @@ def register_seller(request):
 @permission_classes([AllowAny])
 def register_customer(request):
     from customers.models import Customer
-    from django.contrib.auth.models import User
 
     username = request.data.get('username')
     email = request.data.get('email')
@@ -63,7 +79,13 @@ def register_customer(request):
     if User.objects.filter(email=email).exists():
         return Response({'error': 'Email already in use'}, status=status.HTTP_400_BAD_REQUEST)
 
-    user = User.objects.create_user(username=username, email=email, password=password)
+    user = User.objects.create_user(
+        username=username,
+        email=email,
+        password=password,
+        is_active=True
+    )
+
     Customer.objects.create(user=user, name=name, email=email, phone=phone)
 
     return Response({'message': 'Customer registered successfully'}, status=status.HTTP_201_CREATED)
@@ -76,6 +98,10 @@ def seller_profile(request):
         return Response({'error': 'Only sellers can access this'}, status=status.HTTP_403_FORBIDDEN)
 
     seller = request.user.seller
+
+    # 🔥 Block unapproved sellers even if they somehow authenticate
+    if seller.status != 'active':
+        return Response({'error': 'Await admin approval'}, status=status.HTTP_403_FORBIDDEN)
 
     if request.method == 'GET':
         serializer = SellerSerializer(seller)
@@ -94,9 +120,17 @@ def seller_profile(request):
 def add_seller(request):
     serializer = SellerCreateSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        seller = serializer.save()
+
+        # 🔥 Admin-created sellers are immediately active
+        seller.status = 'active'
+        seller.user.is_active = True
+        seller.user.save()
+        seller.save()
+
         return Response({'message': 'Seller added successfully'}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
