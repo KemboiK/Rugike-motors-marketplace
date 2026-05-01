@@ -89,8 +89,13 @@ const ContactUs = () => {
                 <CardDescription>Our team is available Mon-Fri, 9am-6pm</CardDescription>
               </CardHeader>
               <CardContent className="text-center">
-                <p className="text-lg font-medium text-rugike-primary">+(254)*********</p>
-                <Button variant="link" className="text-rugike-accent mt-2">Call Now</Button>
+                <p className="text-lg font-medium text-rugike-primary">+(254) 100 508 309</p>
+                <a
+                  href="tel:+254100508309"
+                  className="text-rugike-accent mt-2 inline-block hover:underline font-medium"
+                >
+                  Call Now
+                </a>
               </CardContent>
             </Card>
 
@@ -104,7 +109,12 @@ const ContactUs = () => {
               </CardHeader>
               <CardContent className="text-center">
                 <p className="text-lg font-medium text-rugike-primary">info@rugikemotors.com</p>
-                <Button variant="link" className="text-rugike-accent mt-2">Send Email</Button>
+                <a
+                  href="mailto:info@rugikemotors.com"
+                  className="text-rugike-accent mt-2 inline-block hover:underline font-medium"
+                >
+                  Send Email
+                </a>
               </CardContent>
             </Card>
 
@@ -118,7 +128,12 @@ const ContactUs = () => {
               </CardHeader>
               <CardContent className="text-center">
                 <p className="text-lg font-medium text-rugike-primary">Available 24/7</p>
-                <Button variant="link" className="text-rugike-accent mt-2">Start Chat</Button>
+                <button
+                  onClick={() => document.getElementById("contact-form")?.scrollIntoView({ behavior: "smooth" })}
+                  className="text-rugike-accent mt-2 inline-block hover:underline font-medium"
+                >
+                  Start Chat
+                </button>
               </CardContent>
             </Card>
           </div>
@@ -182,7 +197,7 @@ const ContactUs = () => {
               </Card>
             </div>
 
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-3" id="contact-form">
               <Card>
                 <CardHeader>
                   <CardTitle>Send Us a Message</CardTitle>

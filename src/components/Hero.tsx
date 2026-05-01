@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -33,7 +32,7 @@ const Hero = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 animate-slide-up [animation-delay:0.7s] opacity-0">
             <Button size="lg" className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90 text-lg" asChild>
-              <Link to="/cars/1">
+              <Link to="/cars">
                 Browse Cars
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
@@ -42,21 +41,12 @@ const Hero = () => {
               Learn More
             </Button>
           </div>
-          
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4 animate-slide-up [animation-delay:0.9s] opacity-0">
-            <Link to="/admin/dashboard" className="bg-white/10 backdrop-blur-sm rounded-lg p-4 hover:bg-white/20 transition-all">
-              <h3 className="text-lg font-bold mb-1 text-rugike-accent">Admin Portal</h3>
-              <p className="text-sm text-rugike-secondary">Manage cars and sellers</p>
-            </Link>
-            
-            <Link to="/seller/dashboard" className="bg-white/10 backdrop-blur-sm rounded-lg p-4 hover:bg-white/20 transition-all">
-              <h3 className="text-lg font-bold mb-1 text-rugike-accent">Seller Portal</h3>
-              <p className="text-sm text-rugike-secondary">List your car for sale</p>
-            </Link>
-            
-            <Link to="/contact" className="bg-white/10 backdrop-blur-sm rounded-lg p-4 hover:bg-white/20 transition-all">
+
+          {/* Single Customer Support card */}
+          <div className="mt-10 animate-slide-up [animation-delay:0.9s] opacity-0">
+            <Link to="/contact" className="inline-block bg-white/10 backdrop-blur-sm rounded-lg p-4 hover:bg-white/20 transition-all">
               <h3 className="text-lg font-bold mb-1 text-rugike-accent">Customer Support</h3>
-              <p className="text-sm text-rugike-secondary">Contact us about cars</p>
+              <p className="text-sm text-rugike-secondary">Have a question? Contact our team</p>
             </Link>
           </div>
           

@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { CarFront, ShoppingBag, ArrowRight, ArrowDown } from "lucide-react";
 
@@ -21,17 +20,26 @@ const ValueProposition = () => {
     }
   ];
 
+  const handleDiscoverMore = () => {
+    const nextSection = document.getElementById("investor-section");
+    if (nextSection) {
+      nextSection.scrollIntoView({ behavior: "smooth" });
+    } else {
+      window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="py-20 bg-rugike-primary text-white">
       <div className="container-custom">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Why Choose RUGIKE Motors</h2>
           <p className="text-rugike-secondary text-lg max-w-2xl mx-auto">
-            Our mission is to modernize the car buying experience through innovation, 
+            Our mission is to modernize the car buying experience through innovation,
             integrity, and investor-backed growth.
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <Card key={index} className="bg-rugike-dark border-0 shadow-lg hover:shadow-xl transition-all hover:translate-y-[-5px]">
@@ -49,12 +57,17 @@ const ValueProposition = () => {
             </Card>
           ))}
         </div>
-        
+
         <div className="mt-16 text-center">
-          <div className="inline-flex flex-col items-center">
-            <span className="text-rugike-accent font-medium mb-2">Discover More</span>
-            <ArrowDown className="h-6 w-6 text-rugike-accent animate-bounce" />
-          </div>
+          <button
+            onClick={handleDiscoverMore}
+            className="inline-flex flex-col items-center cursor-pointer group focus:outline-none"
+          >
+            <span className="text-rugike-accent font-medium mb-2 group-hover:text-white transition-colors">
+              Discover More
+            </span>
+            <ArrowDown className="h-6 w-6 text-rugike-accent animate-bounce group-hover:text-white transition-colors" />
+          </button>
         </div>
       </div>
     </section>

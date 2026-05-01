@@ -1,10 +1,11 @@
-
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
     <footer className="bg-rugike-primary text-white">
       <div className="container-custom py-12">
+
         {/* Newsletter */}
         <div className="bg-rugike-dark rounded-lg p-8 mb-12">
           <div className="flex flex-col md:flex-row md:items-center justify-between">
@@ -14,11 +15,10 @@ const Footer = () => {
                 Get notified about new vehicles and exclusive offers
               </p>
             </div>
-            
             <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
+              <input
+                type="email"
+                placeholder="Enter your email"
                 className="px-4 py-2 rounded-md bg-rugike-primary border border-rugike-secondary text-white placeholder:text-rugike-secondary focus:outline-none focus:ring-2 focus:ring-rugike-accent"
               />
               <Button className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90">
@@ -27,15 +27,16 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        
-        {/* Footer content */}
+
+        {/* Footer columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+
           {/* Logo & info */}
           <div>
             <div className="mb-4">
-              <a href="/" className="text-2xl font-bold">
+              <Link to="/" className="text-2xl font-bold">
                 <span className="text-rugike-accent">RUGIKE</span> Motors
-              </a>
+              </Link>
             </div>
             <p className="text-rugike-secondary mb-6">
               A next-generation car marketplace designed to connect buyers and sellers with speed, trust, and transparency.
@@ -44,65 +45,90 @@ const Footer = () => {
               Proudly sponsored by <span className="text-white">K-El-ventures</span>
             </p>
           </div>
-          
+
           {/* Quick Links */}
           <div>
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              {["Browse Cars", "Sell Your Car", "Financing", "About Us", "Contact"].map((link, index) => (
-                <li key={index}>
-                  <a href="#" className="text-rugike-secondary hover:text-white transition-colors">
-                    {link}
-                  </a>
-                </li>
-              ))}
+              <li>
+                <Link to="/cars" className="text-rugike-secondary hover:text-white transition-colors">
+                  Browse Cars
+                </Link>
+              </li>
+              <li>
+                <Link to="/auth/login" className="text-rugike-secondary hover:text-white transition-colors">
+                  Sell Your Car
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-rugike-secondary hover:text-white transition-colors">
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-rugike-secondary hover:text-white transition-colors">
+                  About Us
+                </Link>
+              </li>
             </ul>
           </div>
-          
+
           {/* Services */}
           <div>
             <h4 className="text-lg font-semibold mb-4">Services</h4>
             <ul className="space-y-2">
               {["Car Inspection", "Vehicle History", "Financing Options", "Insurance", "Trade-in"].map((service, index) => (
                 <li key={index}>
-                  <a href="#" className="text-rugike-secondary hover:text-white transition-colors">
+                  <Link to="/contact" className="text-rugike-secondary hover:text-white transition-colors">
                     {service}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
-          
+
           {/* Contact */}
           <div>
             <h4 className="text-lg font-semibold mb-4">Contact</h4>
-            <address className="not-italic text-rugike-secondary">
+            <div className="text-rugike-secondary">
               <p className="mb-2">RUGIKE Motors Avenue</p>
               <p className="mb-2">Nairobi, Kenya</p>
               <p className="mb-4">Kenya</p>
-              <p className="mb-2">info@rugikemotors.com</p>
-              <p>+(254)100508309 </p>
-            </address>
+              <a
+                href="mailto:info@rugikemotors.com"
+                className="mb-2 block hover:text-white transition-colors"
+              >
+                info@rugikemotors.com
+              </a>
+              <a
+                href="tel:+254100508309"
+                className="hover:text-white transition-colors"
+              >
+                +(254) 100 508 309
+              </a>
+            </div>
           </div>
+
         </div>
-        
+
         {/* Copyright */}
         <div className="border-t border-rugike-dark mt-12 pt-6 flex flex-col md:flex-row md:justify-between md:items-center">
           <p className="text-rugike-secondary text-sm mb-4 md:mb-0">
             © {new Date().getFullYear()} RUGIKE Motors. All rights reserved.
           </p>
           <div className="flex space-x-6">
-            <a href="#" className="text-rugike-secondary hover:text-white transition-colors">
+            <Link to="/contact" className="text-rugike-secondary hover:text-white transition-colors">
               Privacy Policy
-            </a>
-            <a href="#" className="text-rugike-secondary hover:text-white transition-colors">
+            </Link>
+            <Link to="/contact" className="text-rugike-secondary hover:text-white transition-colors">
               Terms of Service
-            </a>
-            <a href="#" className="text-rugike-secondary hover:text-white transition-colors">
+            </Link>
+            <Link to="/contact" className="text-rugike-secondary hover:text-white transition-colors">
               Sitemap
-            </a>
+            </Link>
           </div>
         </div>
+
       </div>
     </footer>
   );
