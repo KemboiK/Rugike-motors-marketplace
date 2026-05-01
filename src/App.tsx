@@ -32,6 +32,7 @@ const App = () => (
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Index />} />
+          <Route path="/cars" element={<CarListing />} />
           <Route path="/cars/:id" element={<CarDetails />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/auth/login" element={<Login />} />
@@ -50,7 +51,6 @@ const App = () => (
           <Route path="/seller/my-cars" element={<MyCars />} />
           <Route path="/seller/profile" element={<Profile />} />
 
-          <Route path="/cars" element={<CarListing />} />
           
           {/* Catch-all Route */}
           <Route path="*" element={<NotFound />} />
