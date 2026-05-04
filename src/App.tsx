@@ -21,6 +21,7 @@ import ContactUs from "./pages/customer/ContactUs";
 import Login from "./pages/auth/Login";
 import CarListing from "./pages/customer/CarListing";
 import Services from "./pages/Services";
+import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Index />} />
