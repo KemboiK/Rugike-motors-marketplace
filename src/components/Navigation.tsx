@@ -83,6 +83,14 @@ const Navigation = () => {
               Car Details
             </Link>
             <Link
+              to="/services"
+              className={`text-rugike-primary font-medium hover:text-rugike-accent transition-colors relative ${
+                isActive('/services') ? 'text-rugike-accent after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-[3px] after:bg-rugike-accent after:rounded-t-md' : ''
+              }`}
+            >
+              Services
+            </Link>
+            <Link
               to="/contact"
               className={`text-rugike-primary font-medium hover:text-rugike-accent transition-colors relative ${
                 isActive('/contact') ? 'text-rugike-accent after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-[3px] after:bg-rugike-accent after:rounded-t-md' : ''
@@ -192,6 +200,7 @@ const Navigation = () => {
               </div>
 
               <Link to="/cars/1" className="text-rugike-primary font-medium px-2 py-1.5 rounded hover:bg-gray-50">Car Details</Link>
+              <Link to="/services" className="text-rugike-primary font-medium px-2 py-1.5 rounded hover:bg-gray-50">Services</Link>
               <Link to="/contact" className="text-rugike-primary font-medium px-2 py-1.5 rounded hover:bg-gray-50">Contact</Link>
 
               <div className="pt-2 border-t border-gray-100">
