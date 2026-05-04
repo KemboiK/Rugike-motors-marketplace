@@ -66,7 +66,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-rugike-secondary hover:text-white transition-colors">
+                <Link to="/services" className="text-rugike-secondary hover:text-white transition-colors">
                   About Us
                 </Link>
               </li>
@@ -79,7 +79,7 @@ const Footer = () => {
             <ul className="space-y-2">
               {["Car Inspection", "Vehicle History", "Financing Options", "Insurance", "Trade-in"].map((service, index) => (
                 <li key={index}>
-                  <Link to="/contact" className="text-rugike-secondary hover:text-white transition-colors">
+                  <Link to="/services" className="text-rugike-secondary hover:text-white transition-colors">
                     {service}
                   </Link>
                 </li>

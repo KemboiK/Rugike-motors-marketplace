@@ -20,6 +20,7 @@ import CarDetails from "./pages/customer/CarDetails";
 import ContactUs from "./pages/customer/ContactUs";
 import Login from "./pages/auth/Login";
 import CarListing from "./pages/customer/CarListing";
+import Services from "./pages/Services";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/cars/:id" element={<CarDetails />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/auth/login" element={<Login />} />
+          <Route path="/services" element={<Services />} />
           
           {/* Admin Routes */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
