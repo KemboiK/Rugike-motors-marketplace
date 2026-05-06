@@ -83,15 +83,15 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-rugike-primary text-white hover:bg-rugike-dark transition-colors px-6 py-3 rounded-md font-medium;
+    @apply bg-Ndai-primary text-white hover:bg-Ndai-dark transition-colors px-6 py-3 rounded-md font-medium;
   }
   
   .btn-secondary {
-    @apply bg-rugike-secondary text-white hover:brightness-90 transition-colors px-6 py-3 rounded-md font-medium;
+    @apply bg-Ndai-secondary text-white hover:brightness-90 transition-colors px-6 py-3 rounded-md font-medium;
   }
   
   .btn-accent {
-    @apply bg-rugike-accent text-rugike-primary hover:brightness-90 transition-colors px-6 py-3 rounded-md font-medium;
+    @apply bg-Ndai-accent text-Ndai-primary hover:brightness-90 transition-colors px-6 py-3 rounded-md font-medium;
   }
 
   .container-custom {

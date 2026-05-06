@@ -63,7 +63,7 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				rugike: {
+				Ndai: {
 					primary: '#0F172A',    // Deep navy blue
 					secondary: '#94A3B8',  // Silver
 					accent: '#D4AF37',     // Gold accent

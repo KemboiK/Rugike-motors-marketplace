@@ -110,7 +110,7 @@ const CarDetails = () => {
       <>
         <Navigation />
         <main className="container-custom py-8 flex justify-center items-center h-64">
-          <Loader2 className="h-10 w-10 animate-spin text-rugike-primary" />
+          <Loader2 className="h-10 w-10 animate-spin text-Ndai-primary" />
         </main>
         <Footer />
       </>
@@ -160,7 +160,7 @@ const CarDetails = () => {
                       key={index}
                       className={`aspect-video bg-gray-100 rounded-md overflow-hidden cursor-pointer border-2 ${
                         mainImage === `http://127.0.0.1:8000${img.image}`
-                          ? "border-rugike-accent"
+                          ? "border-Ndai-accent"
                           : "border-transparent"
                       }`}
                       onClick={() => setMainImage(`http://127.0.0.1:8000${img.image}`)}
@@ -190,15 +190,15 @@ const CarDetails = () => {
                 <p className="text-gray-700 mb-6">{carData.description || "No description available."}</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div className="flex items-center gap-2">
-                    <Car className="h-5 w-5 text-rugike-primary" />
+                    <Car className="h-5 w-5 text-Ndai-primary" />
                     <span className="text-gray-700">{carData.year} {carData.make}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Gauge className="h-5 w-5 text-rugike-primary" />
+                    <Gauge className="h-5 w-5 text-Ndai-primary" />
                     <span className="text-gray-700">{carData.mileage?.toLocaleString()} mi</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Fuel className="h-5 w-5 text-rugike-primary" />
+                    <Fuel className="h-5 w-5 text-Ndai-primary" />
                     <span className="text-gray-700">{carData.fuel_type}</span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -254,17 +254,17 @@ const CarDetails = () => {
                   <CardContent className="pt-4">
                     <div className="flex flex-col gap-3">
                       <div className="flex items-center gap-3">
-                        <Calendar className="h-5 w-5 text-rugike-primary" />
+                        <Calendar className="h-5 w-5 text-Ndai-primary" />
                         <span>Member since: {carData.seller?.join_date || "N/A"}</span>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Phone className="h-5 w-5 text-rugike-primary" />
+                        <Phone className="h-5 w-5 text-Ndai-primary" />
                         <a href={`tel:${carData.phone}`} className="underline">
                           {carData.phone || "N/A"}
                         </a>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Mail className="h-5 w-5 text-rugike-primary" />
+                        <Mail className="h-5 w-5 text-Ndai-primary" />
                         <a href={`mailto:${carData.seller?.email}`} className="underline">
                           {carData.seller?.email || "N/A"}
                         </a>
@@ -281,7 +281,7 @@ const CarDetails = () => {
             <Card>
               <CardContent className="pt-4">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-3xl font-extrabold text-rugike-primary">
+                  <h3 className="text-3xl font-extrabold text-Ndai-primary">
                     KES {Number(carData.price)?.toLocaleString() || "N/A"}
                   </h3>
                   <Badge className={carData.status === "approved" ? "bg-green-500" : "bg-yellow-500"}>
@@ -311,14 +311,14 @@ const CarDetails = () => {
                 {/* Inquiry Form */}
                 <div className="space-y-3">
                   <textarea
-                    className="w-full border rounded-md p-3 text-sm resize-none h-24 focus:outline-none focus:ring-2 focus:ring-rugike-primary"
+                    className="w-full border rounded-md p-3 text-sm resize-none h-24 focus:outline-none focus:ring-2 focus:ring-Ndai-primary"
                     placeholder="Write a message to the seller..."
                     value={inquiryMessage}
                     onChange={(e) => setInquiryMessage(e.target.value)}
                   />
                   <Button
                     onClick={handleContact}
-                    className="w-full bg-rugike-primary hover:bg-rugike-dark"
+                    className="w-full bg-Ndai-primary hover:bg-Ndai-dark"
                     disabled={sendingInquiry}
                   >
                     {sendingInquiry ? (

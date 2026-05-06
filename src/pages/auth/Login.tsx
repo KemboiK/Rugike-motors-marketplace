@@ -103,7 +103,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rugike-primary to-rugike-dark p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-Ndai-primary to-Ndai-dark p-4">
       <Card className="w-full max-w-md">
 
         {/* LOGIN VIEW */}
@@ -111,7 +111,7 @@ const Login = () => {
           <>
             <CardHeader className="text-center">
               <CardTitle className="text-2xl">
-                <span className="text-rugike-accent">RUGIKE</span> Motors
+                <span className="text-Ndai-accent">Ndai</span> Motors
               </CardTitle>
               <CardDescription>Enter your credentials to continue</CardDescription>
             </CardHeader>
@@ -140,7 +140,7 @@ const Login = () => {
                 <p className="text-center text-sm text-muted-foreground mt-2">
                   New here?{" "}
                   <span
-                    className="text-rugike-accent cursor-pointer hover:underline"
+                    className="text-Ndai-accent cursor-pointer hover:underline"
                     onClick={() => setView("choose")}
                   >
                     Create an account
@@ -161,19 +161,19 @@ const Login = () => {
           <>
             <CardHeader className="text-center">
               <CardTitle className="text-2xl">
-                <span className="text-rugike-accent">RUGIKE</span> Motors
+                <span className="text-Ndai-accent">Ndai</span> Motors
               </CardTitle>
               <CardDescription>Register as a customer or seller?</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <Button
-                className="w-full h-16 text-lg bg-rugike-primary hover:bg-rugike-dark flex items-center justify-center gap-3"
+                className="w-full h-16 text-lg bg-Ndai-primary hover:bg-Ndai-dark flex items-center justify-center gap-3"
                 onClick={() => setView("register-customer")}
               >
                 <User className="h-5 w-5" /> I'm a Customer
               </Button>
               <Button
-                className="w-full h-16 text-lg bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90 flex items-center justify-center gap-3"
+                className="w-full h-16 text-lg bg-Ndai-accent text-Ndai-primary hover:bg-Ndai-accent/90 flex items-center justify-center gap-3"
                 onClick={() => setView("register-seller")}
               >
                 <Car className="h-5 w-5" /> I'm a Seller
@@ -194,7 +194,7 @@ const Login = () => {
           <>
             <CardHeader className="text-center">
               <CardTitle className="text-2xl">
-                <span className="text-rugike-accent">RUGIKE</span> Motors
+                <span className="text-Ndai-accent">Ndai</span> Motors
               </CardTitle>
               <CardDescription>Create your customer account</CardDescription>
             </CardHeader>
@@ -239,7 +239,7 @@ const Login = () => {
           <>
             <CardHeader className="text-center">
               <CardTitle className="text-2xl">
-                <span className="text-rugike-accent">RUGIKE</span> Motors
+                <span className="text-Ndai-accent">Ndai</span> Motors
               </CardTitle>
               <CardDescription>Apply to become a seller</CardDescription>
             </CardHeader>
@@ -269,7 +269,7 @@ const Login = () => {
                   <Label>Company Name</Label>
                   <Input placeholder="Your dealership name" value={regCompany} onChange={(e) => setRegCompany(e.target.value)} />
                 </div>
-                <Button type="submit" className="w-full bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90">
+                <Button type="submit" className="w-full bg-Ndai-accent text-Ndai-primary hover:bg-Ndai-accent/90">
                   Submit Application
                 </Button>
                 <Button

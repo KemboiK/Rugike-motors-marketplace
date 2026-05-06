@@ -17,7 +17,7 @@ const Index = () => {
   
   useEffect(() => {
     // Check if user has seen animation before (using localStorage)
-    const hasSeenAnimation = localStorage.getItem('rugike_animation_seen');
+    const hasSeenAnimation = localStorage.getItem('Ndai_animation_seen');
     
     if (hasSeenAnimation) {
       setShowAnimation(false);
@@ -30,13 +30,13 @@ const Index = () => {
   
   const handleAnimationComplete = () => {
     // Save to localStorage that user has seen the animation
-    localStorage.setItem('rugike_animation_seen', 'true');
+    localStorage.setItem('Ndai_animation_seen', 'true');
     setShowAnimation(false);
     setContentLoaded(true);
   };
   
   const skipAnimation = () => {
-    localStorage.setItem('rugike_animation_seen', 'true');
+    localStorage.setItem('Ndai_animation_seen', 'true');
     setShowAnimation(false);
     setContentLoaded(true);
   };
@@ -49,7 +49,7 @@ const Index = () => {
           <LaunchAnimation onAnimationComplete={handleAnimationComplete} />
           <Button 
             variant="outline" 
-            className="absolute bottom-8 right-8 bg-white/80 backdrop-blur-sm hover:bg-white text-rugike-primary border-rugike-primary"
+            className="absolute bottom-8 right-8 bg-white/80 backdrop-blur-sm hover:bg-white text-Ndai-primary border-Ndai-primary"
             onClick={skipAnimation}
           >
             Skip Animation <X className="ml-1 h-4 w-4" />

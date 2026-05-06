@@ -8,16 +8,16 @@ const InvestorBacked = () => {
       <div className="container-custom">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <Badge className="mb-4 bg-rugike-accent/20 text-rugike-primary hover:bg-rugike-accent/30 py-1.5 px-3">
+            <Badge className="mb-4 bg-Ndai-accent/20 text-Ndai-primary hover:bg-Ndai-accent/30 py-1.5 px-3">
               K-El-ventures Backed
             </Badge>
             
-            <h2 className="text-3xl md:text-4xl font-bold text-rugike-primary mb-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-Ndai-primary mb-6">
               Private Equity Excellence <br/>
-              <span className="text-rugike-accent">Powers Our Platform</span>
+              <span className="text-Ndai-accent">Powers Our Platform</span>
             </h2>
             
-            <p className="text-rugike-secondary text-lg mb-8">
+            <p className="text-Ndai-secondary text-lg mb-8">
               Powered by strategic investment from our private equity firm, El-ventures, 
               our platform is a next-generation car marketplace designed to connect buyers 
               and sellers with speed, trust, and transparency.
@@ -33,7 +33,7 @@ const InvestorBacked = () => {
                 "Premium customer support"
               ].map((benefit, index) => (
                 <div key={index} className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-rugike-accent mt-1 mr-2" />
+                  <CheckCircle className="h-5 w-5 text-Ndai-accent mt-1 mr-2" />
                   <span>{benefit}</span>
                 </div>
               ))}
@@ -51,18 +51,18 @@ const InvestorBacked = () => {
             </div>
             
             {/* Decorative elements */}
-            <div className="absolute -bottom-6 -left-6 w-48 h-48 bg-rugike-accent/20 rounded-lg z-0"></div>
-            <div className="absolute -top-6 -right-6 w-32 h-32 bg-rugike-primary/10 rounded-lg z-0"></div>
+            <div className="absolute -bottom-6 -left-6 w-48 h-48 bg-Ndai-accent/20 rounded-lg z-0"></div>
+            <div className="absolute -top-6 -right-6 w-32 h-32 bg-Ndai-primary/10 rounded-lg z-0"></div>
             
             {/* Trust badge */}
             <div className="absolute -bottom-10 right-8 bg-white shadow-lg rounded-lg p-4 z-20">
               <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full bg-rugike-accent flex items-center justify-center">
-                  <span className="text-rugike-primary font-bold text-sm">EV</span>
+                <div className="w-10 h-10 rounded-full bg-Ndai-accent flex items-center justify-center">
+                  <span className="text-Ndai-primary font-bold text-sm">EV</span>
                 </div>
                 <div className="ml-3">
-                  <p className="font-semibold text-rugike-primary">K-El-ventures</p>
-                  <p className="text-xs text-rugike-secondary">Strategic Investment Partner</p>
+                  <p className="font-semibold text-Ndai-primary">K-El-ventures</p>
+                  <p className="text-xs text-Ndai-secondary">Strategic Investment Partner</p>
                 </div>
               </div>
             </div>

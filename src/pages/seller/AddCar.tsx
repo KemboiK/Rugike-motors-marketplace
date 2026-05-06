@@ -135,7 +135,7 @@ const AddCar = () => {
       <SellerNavigation />
 
       <main className="container-custom py-8">
-        <h1 className="text-3xl font-bold text-rugike-primary mb-8">Add New Car</h1>
+        <h1 className="text-3xl font-bold text-Ndai-primary mb-8">Add New Car</h1>
 
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-8">
@@ -299,7 +299,7 @@ const AddCar = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Seller Contact Information</CardTitle>
-                <CardDescription>Your contact information will only be shared with RUGIKE administrators.</CardDescription>
+                <CardDescription>Your contact information will only be shared with Ndai administrators.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -339,7 +339,7 @@ const AddCar = () => {
                       I agree to the terms and conditions
                     </label>
                     <p className="text-sm text-muted-foreground">
-                      I understand that my contact information will only be shared with RUGIKE administrators.
+                      I understand that my contact information will only be shared with Ndai administrators.
                     </p>
                   </div>
                 </div>
@@ -352,7 +352,7 @@ const AddCar = () => {
               </Button>
               <Button
                 type="submit"
-                className="bg-rugike-primary text-white hover:bg-rugike-dark"
+                className="bg-Ndai-primary text-white hover:bg-Ndai-dark"
                 disabled={submitting}
               >
                 {submitting ? (

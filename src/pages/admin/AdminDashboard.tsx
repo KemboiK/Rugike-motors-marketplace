@@ -73,7 +73,7 @@ const AdminDashboard = () => {
         {/* Stats Cards */}
         {loading ? (
           <div className="flex justify-center items-center h-32">
-            <Loader2 className="h-8 w-8 animate-spin text-rugike-primary" />
+            <Loader2 className="h-8 w-8 animate-spin text-Ndai-primary" />
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">

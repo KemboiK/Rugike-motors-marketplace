@@ -180,7 +180,7 @@ const Profile = () => {
       <div className="min-h-screen bg-gray-50">
         <SellerNavigation />
         <div className="flex justify-center items-center h-64">
-          <Loader2 className="h-10 w-10 animate-spin text-rugike-primary" />
+          <Loader2 className="h-10 w-10 animate-spin text-Ndai-primary" />
         </div>
       </div>
     );
@@ -191,7 +191,7 @@ const Profile = () => {
       <SellerNavigation />
 
       <main className="container-custom py-8">
-        <h1 className="text-3xl font-bold text-rugike-primary mb-8">My Profile</h1>
+        <h1 className="text-3xl font-bold text-Ndai-primary mb-8">My Profile</h1>
 
         <Tabs defaultValue="profile" className="space-y-6">
           <TabsList>
@@ -230,7 +230,7 @@ const Profile = () => {
                   <div className="flex flex-col md:flex-row gap-4">
                     <div className="w-full md:w-1/3">
                       <div className="flex flex-col items-center justify-center bg-gray-100 rounded-lg p-6 h-full">
-                        <div className="w-32 h-32 rounded-full bg-rugike-primary flex items-center justify-center text-white text-4xl font-bold mb-4">
+                        <div className="w-32 h-32 rounded-full bg-Ndai-primary flex items-center justify-center text-white text-4xl font-bold mb-4">
                           {formData.name?.split(" ").map((n) => n[0]).join("") || "?"}
                         </div>
                         {isEditing && (
@@ -285,7 +285,7 @@ const Profile = () => {
               </CardHeader>
               <CardContent>
                 <div className="flex items-start space-x-4">
-                  <MapPin className="h-5 w-5 text-rugike-primary mt-1" />
+                  <MapPin className="h-5 w-5 text-Ndai-primary mt-1" />
                   <div>
                     <p className="font-medium">{formData.company}</p>
                     <p className="text-gray-500">{formData.address}</p>

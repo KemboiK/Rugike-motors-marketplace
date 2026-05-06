@@ -74,9 +74,9 @@ const SellerDashboard = () => {
 
       <main className="container-custom py-8">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-rugike-primary">Seller Dashboard</h1>
+          <h1 className="text-3xl font-bold text-Ndai-primary">Seller Dashboard</h1>
           <div className="mt-4 md:mt-0">
-            <Button className="bg-rugike-primary text-white hover:bg-rugike-dark" asChild>
+            <Button className="bg-Ndai-primary text-white hover:bg-Ndai-dark" asChild>
               <Link to="/seller/add-car">
                 <Car className="mr-2 h-4 w-4" />
                 Add New Car
@@ -88,7 +88,7 @@ const SellerDashboard = () => {
         {/* Stats Cards */}
         {loading ? (
           <div className="flex justify-center items-center h-32">
-            <Loader2 className="h-8 w-8 animate-spin text-rugike-primary" />
+            <Loader2 className="h-8 w-8 animate-spin text-Ndai-primary" />
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -99,8 +99,8 @@ const SellerDashboard = () => {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div className="text-3xl font-bold">{myCars.length}</div>
-                  <div className="p-2 bg-rugike-light rounded-full">
-                    <Car className="h-5 w-5 text-rugike-primary" />
+                  <div className="p-2 bg-Ndai-light rounded-full">
+                    <Car className="h-5 w-5 text-Ndai-primary" />
                   </div>
                 </div>
                 <p className="text-yellow-500 text-sm mt-2">

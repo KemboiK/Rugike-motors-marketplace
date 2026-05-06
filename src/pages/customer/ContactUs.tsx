@@ -73,26 +73,26 @@ const ContactUs = () => {
       <main className="container-custom py-12">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-rugike-primary mb-4">Contact Us</h1>
-            <p className="text-rugike-secondary text-lg max-w-2xl mx-auto">
-              Have questions about a specific vehicle or our services? Reach out to the RUGIKE Motors team through any of our contact channels below.
+            <h1 className="text-4xl font-bold text-Ndai-primary mb-4">Contact Us</h1>
+            <p className="text-Ndai-secondary text-lg max-w-2xl mx-auto">
+              Have questions about a specific vehicle or our services? Reach out to the Ndai Motors team through any of our contact channels below.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             <Card>
               <CardHeader className="text-center">
-                <div className="mx-auto bg-rugike-light rounded-full p-3 w-16 h-16 flex items-center justify-center mb-4">
-                  <Phone className="h-8 w-8 text-rugike-primary" />
+                <div className="mx-auto bg-Ndai-light rounded-full p-3 w-16 h-16 flex items-center justify-center mb-4">
+                  <Phone className="h-8 w-8 text-Ndai-primary" />
                 </div>
                 <CardTitle>Call Us</CardTitle>
                 <CardDescription>Our team is available Mon-Fri, 9am-6pm</CardDescription>
               </CardHeader>
               <CardContent className="text-center">
-                <p className="text-lg font-medium text-rugike-primary">+(254) 100 508 309</p>
+                <p className="text-lg font-medium text-Ndai-primary">+(254) 100 508 309</p>
                 <a
                   href="tel:+254100508309"
-                  className="text-rugike-accent mt-2 inline-block hover:underline font-medium"
+                  className="text-Ndai-accent mt-2 inline-block hover:underline font-medium"
                 >
                   Call Now
                 </a>
@@ -101,17 +101,17 @@ const ContactUs = () => {
 
             <Card>
               <CardHeader className="text-center">
-                <div className="mx-auto bg-rugike-light rounded-full p-3 w-16 h-16 flex items-center justify-center mb-4">
-                  <Mail className="h-8 w-8 text-rugike-primary" />
+                <div className="mx-auto bg-Ndai-light rounded-full p-3 w-16 h-16 flex items-center justify-center mb-4">
+                  <Mail className="h-8 w-8 text-Ndai-primary" />
                 </div>
                 <CardTitle>Email Us</CardTitle>
                 <CardDescription>We'll respond within 24 hours</CardDescription>
               </CardHeader>
               <CardContent className="text-center">
-                <p className="text-lg font-medium text-rugike-primary">info@rugikemotors.com</p>
+                <p className="text-lg font-medium text-Ndai-primary">info@Ndaimotors.com</p>
                 <a
-                  href="mailto:info@rugikemotors.com"
-                  className="text-rugike-accent mt-2 inline-block hover:underline font-medium"
+                  href="mailto:info@Ndaimotors.com"
+                  className="text-Ndai-accent mt-2 inline-block hover:underline font-medium"
                 >
                   Send Email
                 </a>
@@ -120,17 +120,17 @@ const ContactUs = () => {
 
             <Card>
               <CardHeader className="text-center">
-                <div className="mx-auto bg-rugike-light rounded-full p-3 w-16 h-16 flex items-center justify-center mb-4">
-                  <MessageSquare className="h-8 w-8 text-rugike-primary" />
+                <div className="mx-auto bg-Ndai-light rounded-full p-3 w-16 h-16 flex items-center justify-center mb-4">
+                  <MessageSquare className="h-8 w-8 text-Ndai-primary" />
                 </div>
                 <CardTitle>Live Chat</CardTitle>
                 <CardDescription>Chat with our team in real-time</CardDescription>
               </CardHeader>
               <CardContent className="text-center">
-                <p className="text-lg font-medium text-rugike-primary">Available 24/7</p>
+                <p className="text-lg font-medium text-Ndai-primary">Available 24/7</p>
                 <button
                   onClick={() => document.getElementById("contact-form")?.scrollIntoView({ behavior: "smooth" })}
-                  className="text-rugike-accent mt-2 inline-block hover:underline font-medium"
+                  className="text-Ndai-accent mt-2 inline-block hover:underline font-medium"
                 >
                   Start Chat
                 </button>
@@ -155,7 +155,7 @@ const ContactUs = () => {
                       </div>
                       <div>
                         <h3 className="font-medium">Instagram</h3>
-                        <p className="text-rugike-secondary text-sm">@rugikemotors</p>
+                        <p className="text-Ndai-secondary text-sm">@Ndaimotors</p>
                       </div>
                     </div>
 
@@ -165,7 +165,7 @@ const ContactUs = () => {
                       </div>
                       <div>
                         <h3 className="font-medium">Twitter</h3>
-                        <p className="text-rugike-secondary text-sm">@rugikemotors</p>
+                        <p className="text-Ndai-secondary text-sm">@Ndaimotors</p>
                       </div>
                     </div>
 
@@ -177,18 +177,18 @@ const ContactUs = () => {
                       </div>
                       <div>
                         <h3 className="font-medium">WhatsApp</h3>
-                        <p className="text-rugike-secondary text-sm">+(254)*********</p>
+                        <p className="text-Ndai-secondary text-sm">+(254)*********</p>
                       </div>
                     </div>
 
                     <div className="pt-4 mt-4 border-t">
                       <h3 className="font-semibold mb-2">Visit Us</h3>
-                      <address className="not-italic text-rugike-secondary">
-                        RUGIKE Motors Showroom<br />
+                      <address className="not-italic text-Ndai-secondary">
+                        Ndai Motors Showroom<br />
                         123 Luxury Ave<br />
                         Nairobi, Kenya 10001
                       </address>
-                      <p className="mt-2 text-rugike-secondary">
+                      <p className="mt-2 text-Ndai-secondary">
                         <strong>Hours:</strong> Mon-Sat: 9am-7pm, Sun: 11am-5pm
                       </p>
                     </div>
@@ -261,7 +261,7 @@ const ContactUs = () => {
 
                     <Button
                       type="submit"
-                      className="w-full bg-rugike-primary text-white hover:bg-rugike-dark"
+                      className="w-full bg-Ndai-primary text-white hover:bg-Ndai-dark"
                       disabled={sending}
                     >
                       {sending ? (

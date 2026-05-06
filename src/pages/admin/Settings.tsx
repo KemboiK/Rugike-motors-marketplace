@@ -13,8 +13,8 @@ import { Loader2, Sun, Moon, Type, Shield, Clock, AlertTriangle } from "lucide-r
 const Settings = () => {
   // ─── General ───────────────────────────────────────────────
   const [generalSettings, setGeneralSettings] = useState({
-    siteName: "RUGIKE Motors",
-    contactEmail: "admin@rugike.com",
+    siteName: "Ndai Motors",
+    contactEmail: "admin@Ndai.com",
     contactPhone: "+(254)*********",
     enableRegistration: true,
     requireApproval: true,
@@ -26,17 +26,17 @@ const Settings = () => {
   };
 
   const handleGeneralSettingsSave = () => {
-    localStorage.setItem("rugike_general_settings", JSON.stringify(generalSettings));
+    localStorage.setItem("Ndai_general_settings", JSON.stringify(generalSettings));
     toast.success("General settings saved successfully");
   };
 
   // ─── Appearance ────────────────────────────────────────────
-  const [darkMode, setDarkMode] = useState(() => localStorage.getItem("rugike_dark_mode") === "true");
-  const [marketplaceName, setMarketplaceName] = useState(() => localStorage.getItem("rugike_marketplace_name") || "RUGIKE Motors");
-  const [fontSize, setFontSize] = useState(() => localStorage.getItem("rugike_font_size") || "normal");
-  const [primaryColor, setPrimaryColor] = useState(() => localStorage.getItem("rugike_primary_color") || "#1a2942");
-  const [accentColor, setAccentColor] = useState(() => localStorage.getItem("rugike_accent_color") || "#f5c842");
-  const [logoPreview, setLogoPreview] = useState<string | null>(localStorage.getItem("rugike_logo") || null);
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem("Ndai_dark_mode") === "true");
+  const [marketplaceName, setMarketplaceName] = useState(() => localStorage.getItem("Ndai_marketplace_name") || "Ndai Motors");
+  const [fontSize, setFontSize] = useState(() => localStorage.getItem("Ndai_font_size") || "normal");
+  const [primaryColor, setPrimaryColor] = useState(() => localStorage.getItem("Ndai_primary_color") || "#1a2942");
+  const [accentColor, setAccentColor] = useState(() => localStorage.getItem("Ndai_accent_color") || "#f5c842");
+  const [logoPreview, setLogoPreview] = useState<string | null>(localStorage.getItem("Ndai_logo") || null);
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -50,12 +50,12 @@ const Settings = () => {
   };
 
   const handleAppearanceSave = () => {
-    localStorage.setItem("rugike_dark_mode", String(darkMode));
-    localStorage.setItem("rugike_marketplace_name", marketplaceName);
-    localStorage.setItem("rugike_font_size", fontSize);
-    localStorage.setItem("rugike_primary_color", primaryColor);
-    localStorage.setItem("rugike_accent_color", accentColor);
-    if (logoPreview) localStorage.setItem("rugike_logo", logoPreview);
+    localStorage.setItem("Ndai_dark_mode", String(darkMode));
+    localStorage.setItem("Ndai_marketplace_name", marketplaceName);
+    localStorage.setItem("Ndai_font_size", fontSize);
+    localStorage.setItem("Ndai_primary_color", primaryColor);
+    localStorage.setItem("Ndai_accent_color", accentColor);
+    if (logoPreview) localStorage.setItem("Ndai_logo", logoPreview);
 
     // Apply dark mode to document
     if (darkMode) {
@@ -72,7 +72,7 @@ const Settings = () => {
 
   // ─── Notifications ─────────────────────────────────────────
   const [notifications, setNotifications] = useState(() => {
-    const saved = localStorage.getItem("rugike_notifications");
+    const saved = localStorage.getItem("Ndai_notifications");
     return saved ? JSON.parse(saved) : {
       newSellerRegistration: true,
       newCarListed: true,
@@ -89,7 +89,7 @@ const Settings = () => {
   };
 
   const handleNotificationsSave = () => {
-    localStorage.setItem("rugike_notifications", JSON.stringify(notifications));
+    localStorage.setItem("Ndai_notifications", JSON.stringify(notifications));
     toast.success("Notification settings saved successfully");
   };
 
@@ -100,8 +100,8 @@ const Settings = () => {
     confirmPassword: "",
   });
   const [changingPassword, setChangingPassword] = useState(false);
-  const [sessionTimeout, setSessionTimeout] = useState(() => localStorage.getItem("rugike_session_timeout") || "24");
-  const [loginAttemptLimit, setLoginAttemptLimit] = useState(() => localStorage.getItem("rugike_login_attempts") || "5");
+  const [sessionTimeout, setSessionTimeout] = useState(() => localStorage.getItem("Ndai_session_timeout") || "24");
+  const [loginAttemptLimit, setLoginAttemptLimit] = useState(() => localStorage.getItem("Ndai_login_attempts") || "5");
   const [twoFA, setTwoFA] = useState(false);
 
   const token = localStorage.getItem("accessToken");
@@ -143,8 +143,8 @@ const Settings = () => {
   };
 
   const handleSecuritySave = () => {
-    localStorage.setItem("rugike_session_timeout", sessionTimeout);
-    localStorage.setItem("rugike_login_attempts", loginAttemptLimit);
+    localStorage.setItem("Ndai_session_timeout", sessionTimeout);
+    localStorage.setItem("Ndai_login_attempts", loginAttemptLimit);
     toast.success("Security settings saved successfully");
   };
 
@@ -164,7 +164,7 @@ const Settings = () => {
 
       <main className="container-custom py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-rugike-primary">System Settings</h1>
+          <h1 className="text-3xl font-bold text-Ndai-primary">System Settings</h1>
           <p className="text-muted-foreground">Manage your application settings and preferences</p>
         </div>
 
@@ -264,7 +264,7 @@ const Settings = () => {
                 {/* Dark Mode */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    {darkMode ? <Moon className="h-5 w-5 text-rugike-primary" /> : <Sun className="h-5 w-5 text-rugike-primary" />}
+                    {darkMode ? <Moon className="h-5 w-5 text-Ndai-primary" /> : <Sun className="h-5 w-5 text-Ndai-primary" />}
                     <div>
                       <Label className="block">Dark Mode</Label>
                       <p className="text-sm text-muted-foreground">Switch between light and dark theme</p>
@@ -279,7 +279,7 @@ const Settings = () => {
                   <Input
                     value={marketplaceName}
                     onChange={(e) => setMarketplaceName(e.target.value)}
-                    placeholder="RUGIKE Motors"
+                    placeholder="Ndai Motors"
                   />
                   <p className="text-sm text-muted-foreground">This name appears in the navigation and page titles</p>
                 </div>
@@ -287,7 +287,7 @@ const Settings = () => {
                 {/* Font Size */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 mb-2">
-                    <Type className="h-5 w-5 text-rugike-primary" />
+                    <Type className="h-5 w-5 text-Ndai-primary" />
                     <Label>Font Size</Label>
                   </div>
                   <div className="flex gap-3">
@@ -295,8 +295,8 @@ const Settings = () => {
                       onClick={() => setFontSize("normal")}
                       className={`px-6 py-2 rounded-lg border-2 font-medium transition-all ${
                         fontSize === "normal"
-                          ? "border-rugike-primary bg-rugike-primary text-white"
-                          : "border-gray-200 hover:border-rugike-primary"
+                          ? "border-Ndai-primary bg-Ndai-primary text-white"
+                          : "border-gray-200 hover:border-Ndai-primary"
                       }`}
                     >
                       Normal
@@ -305,8 +305,8 @@ const Settings = () => {
                       onClick={() => setFontSize("large")}
                       className={`px-6 py-2 rounded-lg border-2 font-medium transition-all text-lg ${
                         fontSize === "large"
-                          ? "border-rugike-primary bg-rugike-primary text-white"
-                          : "border-gray-200 hover:border-rugike-primary"
+                          ? "border-Ndai-primary bg-Ndai-primary text-white"
+                          : "border-gray-200 hover:border-Ndai-primary"
                       }`}
                     >
                       Large
@@ -386,7 +386,7 @@ const Settings = () => {
               <CardContent className="space-y-6">
 
                 <div>
-                  <h3 className="font-semibold text-rugike-primary mb-4">Admin Notifications</h3>
+                  <h3 className="font-semibold text-Ndai-primary mb-4">Admin Notifications</h3>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
@@ -432,7 +432,7 @@ const Settings = () => {
                 </div>
 
                 <div className="border-t pt-6">
-                  <h3 className="font-semibold text-rugike-primary mb-4">Seller Notifications</h3>
+                  <h3 className="font-semibold text-Ndai-primary mb-4">Seller Notifications</h3>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
@@ -458,7 +458,7 @@ const Settings = () => {
                 </div>
 
                 <div className="border-t pt-6">
-                  <h3 className="font-semibold text-rugike-primary mb-4">Customer Notifications</h3>
+                  <h3 className="font-semibold text-Ndai-primary mb-4">Customer Notifications</h3>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
@@ -487,7 +487,7 @@ const Settings = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-rugike-primary" />
+                  <Shield className="h-5 w-5 text-Ndai-primary" />
                   Change Admin Password
                 </CardTitle>
                 <CardDescription>Update your admin account password</CardDescription>
@@ -533,7 +533,7 @@ const Settings = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-rugike-primary" />
+                  <Clock className="h-5 w-5 text-Ndai-primary" />
                   Session Settings
                 </CardTitle>
                 <CardDescription>Control session timeouts and login limits</CardDescription>

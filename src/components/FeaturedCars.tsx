@@ -48,9 +48,9 @@ const FeaturedCars = () => {
 
   if (loading) {
     return (
-      <section className="py-20 bg-rugike-light">
+      <section className="py-20 bg-Ndai-light">
         <div className="container-custom flex justify-center items-center h-64">
-          <Loader2 className="h-10 w-10 animate-spin text-rugike-primary" />
+          <Loader2 className="h-10 w-10 animate-spin text-Ndai-primary" />
         </div>
       </section>
     );
@@ -58,7 +58,7 @@ const FeaturedCars = () => {
 
   if (error) {
     return (
-      <section className="py-20 bg-rugike-light">
+      <section className="py-20 bg-Ndai-light">
         <div className="container-custom flex justify-center items-center h-64">
           <p className="text-red-500 text-lg">{error}</p>
         </div>
@@ -67,17 +67,17 @@ const FeaturedCars = () => {
   }
 
   return (
-    <section className="py-20 bg-rugike-light">
+    <section className="py-20 bg-Ndai-light">
       <div className="container-custom">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
           <div>
-            <h2 className="text-3xl font-bold text-rugike-primary mb-4">Featured Vehicles</h2>
-            <p className="text-rugike-secondary max-w-xl">
+            <h2 className="text-3xl font-bold text-Ndai-primary mb-4">Featured Vehicles</h2>
+            <p className="text-Ndai-secondary max-w-xl">
               Discover our handpicked selection of premium vehicles, each thoroughly inspected and verified for quality.
             </p>
           </div>
           <Link to="/cars/all">
-            <Button variant="outline" className="mt-4 md:mt-0 border-rugike-primary text-rugike-primary hover:bg-rugike-primary hover:text-white group">
+            <Button variant="outline" className="mt-4 md:mt-0 border-Ndai-primary text-Ndai-primary hover:bg-Ndai-primary hover:text-white group">
               View All Cars
               <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
@@ -86,11 +86,11 @@ const FeaturedCars = () => {
 
         <Tabs defaultValue="all" className="mb-8" onValueChange={setActiveTab}>
           <TabsList className="bg-white grid grid-cols-2 md:grid-cols-5 gap-2 p-1 w-full md:w-auto">
-            <TabsTrigger value="all" className="data-[state=active]:bg-rugike-accent data-[state=active]:text-rugike-primary">All Cars</TabsTrigger>
-            <TabsTrigger value="gasoline" className="data-[state=active]:bg-rugike-accent data-[state=active]:text-rugike-primary">Gasoline</TabsTrigger>
-            <TabsTrigger value="diesel" className="data-[state=active]:bg-rugike-accent data-[state=active]:text-rugike-primary">Diesel</TabsTrigger>
-            <TabsTrigger value="hybrid" className="data-[state=active]:bg-rugike-accent data-[state=active]:text-rugike-primary">Hybrid</TabsTrigger>
-            <TabsTrigger value="electric" className="data-[state=active]:bg-rugike-accent data-[state=active]:text-rugike-primary">Electric</TabsTrigger>
+            <TabsTrigger value="all" className="data-[state=active]:bg-Ndai-accent data-[state=active]:text-Ndai-primary">All Cars</TabsTrigger>
+            <TabsTrigger value="gasoline" className="data-[state=active]:bg-Ndai-accent data-[state=active]:text-Ndai-primary">Gasoline</TabsTrigger>
+            <TabsTrigger value="diesel" className="data-[state=active]:bg-Ndai-accent data-[state=active]:text-Ndai-primary">Diesel</TabsTrigger>
+            <TabsTrigger value="hybrid" className="data-[state=active]:bg-Ndai-accent data-[state=active]:text-Ndai-primary">Hybrid</TabsTrigger>
+            <TabsTrigger value="electric" className="data-[state=active]:bg-Ndai-accent data-[state=active]:text-Ndai-primary">Electric</TabsTrigger>
           </TabsList>
 
           <TabsContent value={activeTab} className="mt-6">
@@ -101,7 +101,7 @@ const FeaturedCars = () => {
 
               {filteredCars.length === 0 && (
                 <div className="col-span-3 py-12 text-center">
-                  <p className="text-xl text-rugike-secondary">No cars found in this category.</p>
+                  <p className="text-xl text-Ndai-secondary">No cars found in this category.</p>
                 </div>
               )}
             </div>
@@ -125,43 +125,43 @@ const CarCard = ({ car }: { car: Car }) => {
           alt={car.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <Badge className="absolute top-3 left-3 bg-rugike-primary text-white">
+        <Badge className="absolute top-3 left-3 bg-Ndai-primary text-white">
           Verified
         </Badge>
       </div>
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-3">
-          <h3 className="text-xl font-semibold text-rugike-primary">{car.name}</h3>
-          <span className="text-xl font-bold text-rugike-accent">
+          <h3 className="text-xl font-semibold text-Ndai-primary">{car.name}</h3>
+          <span className="text-xl font-bold text-Ndai-accent">
             KES {Number(car.price).toLocaleString()}
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 text-rugike-secondary mb-4">
+        <div className="grid grid-cols-2 gap-3 text-Ndai-secondary mb-4">
           <div className="flex items-center gap-1">
-            <Car className="h-4 w-4 text-rugike-accent" />
+            <Car className="h-4 w-4 text-Ndai-accent" />
             <span className="font-medium">{car.year}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Gauge className="h-4 w-4 text-rugike-accent" />
+            <Gauge className="h-4 w-4 text-Ndai-accent" />
             <span>{car.mileage.toLocaleString()} mi</span>
           </div>
           <div className="flex items-center gap-1 text-sm">
             <span>{car.transmission}</span>
           </div>
           <div className="flex items-center gap-1 text-sm">
-            <Fuel className="h-4 w-4 text-rugike-accent" />
+            <Fuel className="h-4 w-4 text-Ndai-accent" />
             <span>{car.fuel_type}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-1 text-sm text-rugike-secondary mb-4">
-          <Eye className="h-4 w-4 text-rugike-accent" />
+        <div className="flex items-center gap-1 text-sm text-Ndai-secondary mb-4">
+          <Eye className="h-4 w-4 text-Ndai-accent" />
           <span>{car.views_count || 0} views</span>
         </div>
 
         <Link to={`/cars/${car.id}`}>
-          <Button className="w-full bg-rugike-primary hover:bg-rugike-dark group">
+          <Button className="w-full bg-Ndai-primary hover:bg-Ndai-dark group">
             View Details
             <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Button>

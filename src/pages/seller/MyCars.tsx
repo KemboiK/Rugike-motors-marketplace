@@ -100,11 +100,11 @@ const MyCars = () => {
       <SellerNavigation />
 
       <main className="container-custom py-8">
-        <h1 className="text-3xl font-bold text-rugike-primary mb-8">My Car Listings</h1>
+        <h1 className="text-3xl font-bold text-Ndai-primary mb-8">My Car Listings</h1>
 
         {loading ? (
           <div className="flex justify-center items-center h-32">
-            <Loader2 className="h-8 w-8 animate-spin text-rugike-primary" />
+            <Loader2 className="h-8 w-8 animate-spin text-Ndai-primary" />
           </div>
         ) : (
           <Card>
@@ -172,7 +172,7 @@ const MyCars = () => {
                     {cars.length === 0 && (
                       <TableRow>
                         <TableCell colSpan={7} className="text-center py-8 text-gray-500">
-                          No listings yet. <Link to="/seller/add-car" className="text-rugike-accent underline">Add your first car!</Link>
+                          No listings yet. <Link to="/seller/add-car" className="text-Ndai-accent underline">Add your first car!</Link>
                         </TableCell>
                       </TableRow>
                     )}

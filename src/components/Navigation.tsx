@@ -44,8 +44,8 @@ const Navigation = () => {
           {/* Logo */}
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
-              <span className="text-2xl font-bold text-rugike-primary">
-                <span className="text-rugike-accent">RUGIKE</span> Motors
+              <span className="text-2xl font-bold text-Ndai-primary">
+                <span className="text-Ndai-accent">Ndai</span> Motors
               </span>
             </Link>
           </div>
@@ -54,46 +54,46 @@ const Navigation = () => {
           <div className="hidden md:flex items-center space-x-8">
             <Link
               to="/"
-              className={`text-rugike-primary font-medium hover:text-rugike-accent transition-colors relative ${
-                isActive('/') ? 'text-rugike-accent after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-[3px] after:bg-rugike-accent after:rounded-t-md' : ''
+              className={`text-Ndai-primary font-medium hover:text-Ndai-accent transition-colors relative ${
+                isActive('/') ? 'text-Ndai-accent after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-[3px] after:bg-Ndai-accent after:rounded-t-md' : ''
               }`}
             >
               Home
             </Link>
             <div className="relative group">
-              <button className="flex items-center text-rugike-primary font-medium hover:text-rugike-accent transition-colors">
+              <button className="flex items-center text-Ndai-primary font-medium hover:text-Ndai-accent transition-colors">
                 Cars <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
               </button>
               <div className="absolute z-10 left-0 mt-2 w-56 bg-white rounded-md shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 border border-gray-100">
-                <Link to="/cars" className="block px-4 py-2 text-sm text-rugike-primary hover:bg-rugike-light hover:text-rugike-accent">Browse All</Link>
-                <Link to="/cars?filter=premium" className="block px-4 py-2 text-sm text-rugike-primary hover:bg-rugike-light hover:text-rugike-accent">Premium Vehicles</Link>
-                <Link to="/cars?filter=budget" className="block px-4 py-2 text-sm text-rugike-primary hover:bg-rugike-light hover:text-rugike-accent">Budget Friendly</Link>
+                <Link to="/cars" className="block px-4 py-2 text-sm text-Ndai-primary hover:bg-Ndai-light hover:text-Ndai-accent">Browse All</Link>
+                <Link to="/cars?filter=premium" className="block px-4 py-2 text-sm text-Ndai-primary hover:bg-Ndai-light hover:text-Ndai-accent">Premium Vehicles</Link>
+                <Link to="/cars?filter=budget" className="block px-4 py-2 text-sm text-Ndai-primary hover:bg-Ndai-light hover:text-Ndai-accent">Budget Friendly</Link>
                 <div className="border-t border-gray-100 my-1"></div>
-                <Link to="/cars?filter=new" className="block px-4 py-2 text-sm text-rugike-primary hover:bg-rugike-light hover:text-rugike-accent flex items-center">
+                <Link to="/cars?filter=new" className="block px-4 py-2 text-sm text-Ndai-primary hover:bg-Ndai-light hover:text-Ndai-accent flex items-center">
                   <Car className="mr-2 h-4 w-4" /> New Arrivals
                 </Link>
               </div>
             </div>
             <Link
               to="/cars/1"
-              className={`text-rugike-primary font-medium hover:text-rugike-accent transition-colors relative ${
-                isActive('/cars/1') ? 'text-rugike-accent after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-[3px] after:bg-rugike-accent after:rounded-t-md' : ''
+              className={`text-Ndai-primary font-medium hover:text-Ndai-accent transition-colors relative ${
+                isActive('/cars/1') ? 'text-Ndai-accent after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-[3px] after:bg-Ndai-accent after:rounded-t-md' : ''
               }`}
             >
               Car Details
             </Link>
             <Link
               to="/services"
-              className={`text-rugike-primary font-medium hover:text-rugike-accent transition-colors relative ${
-                isActive('/services') ? 'text-rugike-accent after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-[3px] after:bg-rugike-accent after:rounded-t-md' : ''
+              className={`text-Ndai-primary font-medium hover:text-Ndai-accent transition-colors relative ${
+                isActive('/services') ? 'text-Ndai-accent after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-[3px] after:bg-Ndai-accent after:rounded-t-md' : ''
               }`}
             >
               Services
             </Link>
             <Link
               to="/contact"
-              className={`text-rugike-primary font-medium hover:text-rugike-accent transition-colors relative ${
-                isActive('/contact') ? 'text-rugike-accent after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-[3px] after:bg-rugike-accent after:rounded-t-md' : ''
+              className={`text-Ndai-primary font-medium hover:text-Ndai-accent transition-colors relative ${
+                isActive('/contact') ? 'text-Ndai-accent after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-[3px] after:bg-Ndai-accent after:rounded-t-md' : ''
               }`}
             >
               Contact
@@ -126,7 +126,7 @@ const Navigation = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-rugike-primary hover:bg-gray-100"
+                className="text-Ndai-primary hover:bg-gray-100"
                 onClick={() => setShowSearch(true)}
               >
                 <Search className="h-5 w-5" />
@@ -134,7 +134,7 @@ const Navigation = () => {
             )}
 
             <Link to="/auth/login">
-              <Button className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90 shadow-sm">
+              <Button className="bg-Ndai-accent text-Ndai-primary hover:bg-Ndai-accent/90 shadow-sm">
                 <User className="mr-2 h-4 w-4" /> Login / Register
               </Button>
             </Link>
@@ -145,7 +145,7 @@ const Navigation = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="text-rugike-primary hover:bg-gray-100"
+              className="text-Ndai-primary hover:bg-gray-100"
               onClick={() => setShowSearch(!showSearch)}
             >
               <Search className="h-5 w-5" />
@@ -153,7 +153,7 @@ const Navigation = () => {
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-rugike-primary p-2"
+              className="text-Ndai-primary p-2"
             >
               {mobileMenuOpen ? (
                 <X className="h-6 w-6" />
@@ -185,27 +185,27 @@ const Navigation = () => {
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-100 animate-slide-up">
             <div className="flex flex-col space-y-4">
-              <Link to="/" className="text-rugike-primary font-medium px-2 py-1.5 rounded hover:bg-gray-50">Home</Link>
+              <Link to="/" className="text-Ndai-primary font-medium px-2 py-1.5 rounded hover:bg-gray-50">Home</Link>
 
               <div className="space-y-2">
-                <div className="flex items-center justify-between px-2 py-1.5 text-rugike-primary font-medium">
+                <div className="flex items-center justify-between px-2 py-1.5 text-Ndai-primary font-medium">
                   <span>Cars</span>
                   <ChevronDown className="h-4 w-4" />
                 </div>
                 <div className="pl-4 space-y-2 border-l-2 border-gray-100 ml-2">
-                  <Link to="/cars" className="block px-2 py-1.5 text-rugike-primary hover:bg-gray-50 rounded">Browse All</Link>
-                  <Link to="/cars?filter=premium" className="block px-2 py-1.5 text-rugike-primary hover:bg-gray-50 rounded">Premium Vehicles</Link>
-                  <Link to="/cars?filter=budget" className="block px-2 py-1.5 text-rugike-primary hover:bg-gray-50 rounded">Budget Friendly</Link>
+                  <Link to="/cars" className="block px-2 py-1.5 text-Ndai-primary hover:bg-gray-50 rounded">Browse All</Link>
+                  <Link to="/cars?filter=premium" className="block px-2 py-1.5 text-Ndai-primary hover:bg-gray-50 rounded">Premium Vehicles</Link>
+                  <Link to="/cars?filter=budget" className="block px-2 py-1.5 text-Ndai-primary hover:bg-gray-50 rounded">Budget Friendly</Link>
                 </div>
               </div>
 
-              <Link to="/cars/1" className="text-rugike-primary font-medium px-2 py-1.5 rounded hover:bg-gray-50">Car Details</Link>
-              <Link to="/services" className="text-rugike-primary font-medium px-2 py-1.5 rounded hover:bg-gray-50">Services</Link>
-              <Link to="/contact" className="text-rugike-primary font-medium px-2 py-1.5 rounded hover:bg-gray-50">Contact</Link>
+              <Link to="/cars/1" className="text-Ndai-primary font-medium px-2 py-1.5 rounded hover:bg-gray-50">Car Details</Link>
+              <Link to="/services" className="text-Ndai-primary font-medium px-2 py-1.5 rounded hover:bg-gray-50">Services</Link>
+              <Link to="/contact" className="text-Ndai-primary font-medium px-2 py-1.5 rounded hover:bg-gray-50">Contact</Link>
 
               <div className="pt-2 border-t border-gray-100">
                 <Link to="/auth/login" className="block">
-                  <Button className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90 w-full">
+                  <Button className="bg-Ndai-accent text-Ndai-primary hover:bg-Ndai-accent/90 w-full">
                     <User className="mr-2 h-4 w-4" /> Login / Register
                   </Button>
                 </Link>

@@ -98,10 +98,10 @@ const Sellers = () => {
       <AdminNavigation />
       <main className="container-custom py-8">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-rugike-primary">Seller Management</h1>
+          <h1 className="text-3xl font-bold text-Ndai-primary">Seller Management</h1>
           <div className="mt-4 md:mt-0">
             <Button
-              className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90"
+              className="bg-Ndai-accent text-Ndai-primary hover:bg-Ndai-accent/90"
               onClick={() => setShowAddForm(true)}
             >
               Add New Seller
@@ -123,7 +123,7 @@ const Sellers = () => {
 
         {loading ? (
           <div className="flex justify-center items-center h-32">
-            <Loader2 className="h-8 w-8 animate-spin text-rugike-primary" />
+            <Loader2 className="h-8 w-8 animate-spin text-Ndai-primary" />
           </div>
         ) : error ? (
           <p className="text-red-500">{error}</p>
@@ -260,7 +260,7 @@ const Sellers = () => {
                 <Button type="button" variant="ghost" onClick={() => setShowAddForm(false)}>
                   Cancel
                 </Button>
-                <Button type="submit" className="bg-rugike-accent text-rugike-primary">
+                <Button type="submit" className="bg-Ndai-accent text-Ndai-primary">
                   Add Seller
                 </Button>
               </div>

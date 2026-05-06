@@ -20,7 +20,7 @@ const Chatbot = ({ variant = 'buyer' }: ChatbotProps) => {
         ? 'Hello admin! I can help you monitor site activity and provide sentiment analysis.'
         : variant === 'seller'
         ? 'Hello seller! I can help you manage your listings and answer questions about the platform.'
-        : 'Welcome to RUGIKE Motors! How can I help you find your dream car today?',
+        : 'Welcome to Ndai Motors! How can I help you find your dream car today?',
       sender: 'bot',
       timestamp: new Date()
     }
@@ -109,11 +109,11 @@ const Chatbot = ({ variant = 'buyer' }: ChatbotProps) => {
   const getVariantColors = () => {
     switch(variant) {
       case 'admin':
-        return 'bg-rugike-accent text-rugike-primary';
+        return 'bg-Ndai-accent text-Ndai-primary';
       case 'seller':
-        return 'bg-rugike-primary text-white';
+        return 'bg-Ndai-primary text-white';
       default:
-        return 'bg-rugike-accent text-rugike-primary';
+        return 'bg-Ndai-accent text-Ndai-primary';
     }
   };
 
@@ -144,7 +144,7 @@ const Chatbot = ({ variant = 'buyer' }: ChatbotProps) => {
           <CardHeader className={`flex flex-row items-center justify-between ${getVariantColors()}`}>
             <CardTitle className="text-lg flex items-center">
               <MessageCircle className="mr-2 h-5 w-5" />
-              {variant === 'admin' ? 'Admin Assistant' : variant === 'seller' ? 'Seller Support' : 'RUGIKE Assistant'}
+              {variant === 'admin' ? 'Admin Assistant' : variant === 'seller' ? 'Seller Support' : 'Ndai Assistant'}
             </CardTitle>
             <Button 
               variant="ghost" 
@@ -168,8 +168,8 @@ const Chatbot = ({ variant = 'buyer' }: ChatbotProps) => {
                   <div 
                     className={`max-w-[80%] rounded-lg p-3 ${
                       msg.sender === 'user' 
-                        ? 'bg-rugike-primary text-white' 
-                        : 'bg-gray-100 text-rugike-primary'
+                        ? 'bg-Ndai-primary text-white' 
+                        : 'bg-gray-100 text-Ndai-primary'
                     } ${msg.sender === 'user' ? 'animate-slide-left' : 'animate-slide-right'}`}
                   >
                     <p className="text-sm">{msg.text}</p>
@@ -190,7 +190,7 @@ const Chatbot = ({ variant = 'buyer' }: ChatbotProps) => {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className="flex-1 focus:ring-rugike-accent"
+                className="flex-1 focus:ring-Ndai-accent"
               />
               <Button 
                 size="icon" 

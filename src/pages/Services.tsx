@@ -7,9 +7,9 @@ import { Search, FileText, DollarSign, Shield, ArrowLeftRight, ArrowRight, Check
 
 const services = [
   {
-    icon: <Search className="h-10 w-10 text-rugike-accent" />,
+    icon: <Search className="h-10 w-10 text-Ndai-accent" />,
     title: "Car Inspection",
-    description: "Every vehicle listed on RUGIKE Motors goes through a thorough multi-point inspection process. Our certified inspectors check engine performance, chassis integrity, electrical systems, and more — so you know exactly what you're getting before you buy.",
+    description: "Every vehicle listed on Ndai Motors goes through a thorough multi-point inspection process. Our certified inspectors check engine performance, chassis integrity, electrical systems, and more — so you know exactly what you're getting before you buy.",
     features: [
       "150-point mechanical inspection",
       "Engine and transmission check",
@@ -19,7 +19,7 @@ const services = [
     ],
   },
   {
-    icon: <FileText className="h-10 w-10 text-rugike-accent" />,
+    icon: <FileText className="h-10 w-10 text-Ndai-accent" />,
     title: "Vehicle History",
     description: "We provide full vehicle history reports for every listed car. Know the ownership history, accident records, service history, and mileage verification before making your decision.",
     features: [
@@ -31,7 +31,7 @@ const services = [
     ],
   },
   {
-    icon: <DollarSign className="h-10 w-10 text-rugike-accent" />,
+    icon: <DollarSign className="h-10 w-10 text-Ndai-accent" />,
     title: "Financing Options",
     description: "We partner with trusted financial institutions across Kenya to offer flexible car financing plans tailored to your budget. Whether you need a short-term or long-term loan, we'll help you find the right fit.",
     features: [
@@ -43,7 +43,7 @@ const services = [
     ],
   },
   {
-    icon: <Shield className="h-10 w-10 text-rugike-accent" />,
+    icon: <Shield className="h-10 w-10 text-Ndai-accent" />,
     title: "Insurance",
     description: "Drive with confidence. We connect buyers with reputable insurance providers to ensure your new vehicle is covered from day one. Get comprehensive or third-party cover options instantly.",
     features: [
@@ -55,7 +55,7 @@ const services = [
     ],
   },
   {
-    icon: <ArrowLeftRight className="h-10 w-10 text-rugike-accent" />,
+    icon: <ArrowLeftRight className="h-10 w-10 text-Ndai-accent" />,
     title: "Trade-In",
     description: "Looking to upgrade? Bring in your current vehicle and trade it in towards your next purchase. Our team will assess your car's value fairly and apply it directly to your new buy.",
     features: [
@@ -75,10 +75,10 @@ const Services = () => {
 
       <main>
         {/* Header */}
-        <div className="bg-rugike-primary text-white py-16">
+        <div className="bg-Ndai-primary text-white py-16">
           <div className="container-custom text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Our Services</h1>
-            <p className="text-rugike-secondary text-lg max-w-2xl mx-auto">
+            <p className="text-Ndai-secondary text-lg max-w-2xl mx-auto">
               Everything you need to buy, sell, and own a car with confidence — all under one roof.
             </p>
           </div>
@@ -91,7 +91,7 @@ const Services = () => {
               <Card key={index} className="border-0 shadow-md hover:shadow-xl transition-shadow">
                 <CardHeader>
                   <div className="mb-4">{service.icon}</div>
-                  <CardTitle className="text-2xl text-rugike-primary">{service.title}</CardTitle>
+                  <CardTitle className="text-2xl text-Ndai-primary">{service.title}</CardTitle>
                   <CardDescription className="text-base text-gray-600 leading-relaxed">
                     {service.description}
                   </CardDescription>
@@ -100,7 +100,7 @@ const Services = () => {
                   <ul className="space-y-2">
                     {service.features.map((feature, i) => (
                       <li key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                        <CheckCircle className="h-4 w-4 text-rugike-accent flex-shrink-0" />
+                        <CheckCircle className="h-4 w-4 text-Ndai-accent flex-shrink-0" />
                         {feature}
                       </li>
                     ))}
@@ -111,13 +111,13 @@ const Services = () => {
           </div>
 
           {/* CTA */}
-          <div className="mt-16 bg-rugike-primary rounded-2xl p-10 text-center text-white">
+          <div className="mt-16 bg-Ndai-primary rounded-2xl p-10 text-center text-white">
             <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-            <p className="text-rugike-secondary text-lg mb-8 max-w-xl mx-auto">
+            <p className="text-Ndai-secondary text-lg mb-8 max-w-xl mx-auto">
               Browse our verified listings or reach out to our team to learn more about any of our services.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-rugike-accent text-rugike-primary hover:bg-rugike-accent/90" asChild>
+              <Button size="lg" className="bg-Ndai-accent text-Ndai-primary hover:bg-Ndai-accent/90" asChild>
                 <Link to="/cars">
                   Browse Cars <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>

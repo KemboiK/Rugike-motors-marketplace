@@ -63,10 +63,10 @@ const CarListing = () => {
   return (
     <>
       <Navigation />
-      <main className="min-h-screen bg-rugike-light">
+      <main className="min-h-screen bg-Ndai-light">
 
         {/* Header */}
-        <div className="bg-rugike-primary text-white py-12">
+        <div className="bg-Ndai-primary text-white py-12">
           <div className="container-custom">
             <h1 className="text-4xl font-bold mb-4">
               {filter === "premium" && "Premium Vehicles"}
@@ -74,7 +74,7 @@ const CarListing = () => {
               {filter === "new" && "New Arrivals"}
               {filter === "all" && "Browse All Cars"}
             </h1>
-            <p className="text-rugike-secondary text-lg">
+            <p className="text-Ndai-secondary text-lg">
               {filteredCars.length} vehicles available
             </p>
           </div>
@@ -102,7 +102,7 @@ const CarListing = () => {
                 <Button
                   key={f.value}
                   variant={filter === f.value ? "default" : "outline"}
-                  className={filter === f.value ? "bg-rugike-primary text-white" : ""}
+                  className={filter === f.value ? "bg-Ndai-primary text-white" : ""}
                   onClick={() => setFilter(f.value)}
                 >
                   {f.label}
@@ -114,7 +114,7 @@ const CarListing = () => {
           {/* Cars Grid */}
           {loading ? (
             <div className="flex justify-center items-center h-64">
-              <Loader2 className="h-10 w-10 animate-spin text-rugike-primary" />
+              <Loader2 className="h-10 w-10 animate-spin text-Ndai-primary" />
             </div>
           ) : error ? (
             <p className="text-red-500 text-center">{error}</p>
@@ -135,45 +135,45 @@ const CarListing = () => {
                           alt={car.name}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
-                        <Badge className="absolute top-3 left-3 bg-rugike-primary text-white">
+                        <Badge className="absolute top-3 left-3 bg-Ndai-primary text-white">
                           Verified
                         </Badge>
                         {Number(car.price) >= 3000000 && (
-                          <Badge className="absolute top-3 right-3 bg-rugike-accent text-rugike-primary">
+                          <Badge className="absolute top-3 right-3 bg-Ndai-accent text-Ndai-primary">
                             Premium
                           </Badge>
                         )}
                       </div>
                       <CardContent className="p-6">
                         <div className="flex justify-between items-start mb-3">
-                          <h3 className="text-xl font-semibold text-rugike-primary">{car.name}</h3>
-                          <span className="text-xl font-bold text-rugike-accent">
+                          <h3 className="text-xl font-semibold text-Ndai-primary">{car.name}</h3>
+                          <span className="text-xl font-bold text-Ndai-accent">
                             KES {Number(car.price).toLocaleString()}
                           </span>
                         </div>
-                        <div className="grid grid-cols-2 gap-3 text-rugike-secondary mb-4">
+                        <div className="grid grid-cols-2 gap-3 text-Ndai-secondary mb-4">
                           <div className="flex items-center gap-1">
-                            <Car className="h-4 w-4 text-rugike-accent" />
+                            <Car className="h-4 w-4 text-Ndai-accent" />
                             <span className="font-medium">{car.year}</span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <Gauge className="h-4 w-4 text-rugike-accent" />
+                            <Gauge className="h-4 w-4 text-Ndai-accent" />
                             <span>{car.mileage?.toLocaleString()} mi</span>
                           </div>
                           <div className="flex items-center gap-1 text-sm">
                             <span>{car.transmission}</span>
                           </div>
                           <div className="flex items-center gap-1 text-sm">
-                            <Fuel className="h-4 w-4 text-rugike-accent" />
+                            <Fuel className="h-4 w-4 text-Ndai-accent" />
                             <span>{car.fuel_type}</span>
                           </div>
                         </div>
-                        <div className="flex items-center gap-1 text-sm text-rugike-secondary mb-4">
-                          <Eye className="h-4 w-4 text-rugike-accent" />
+                        <div className="flex items-center gap-1 text-sm text-Ndai-secondary mb-4">
+                          <Eye className="h-4 w-4 text-Ndai-accent" />
                           <span>{car.views_count || 0} views</span>
                         </div>
                         <Link to={`/cars/${car.id}`}>
-                          <Button className="w-full bg-rugike-primary hover:bg-rugike-dark group">
+                          <Button className="w-full bg-Ndai-primary hover:bg-Ndai-dark group">
                             View Details
                             <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
                           </Button>
@@ -186,7 +186,7 @@ const CarListing = () => {
 
               {filteredCars.length === 0 && (
                 <div className="text-center py-16">
-                  <p className="text-xl text-rugike-secondary">No cars found matching your search.</p>
+                  <p className="text-xl text-Ndai-secondary">No cars found matching your search.</p>
                   <Button className="mt-4" onClick={() => { setSearchTerm(""); setFilter("all"); }}>
                     Clear Filters
                   </Button>
