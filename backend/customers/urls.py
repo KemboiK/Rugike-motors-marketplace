@@ -10,6 +10,7 @@ urlpatterns = [
     path('', include(router.urls)),
     path('<int:pk>/activate/', views.activate_customer, name='activate-customer'),
     path('<int:pk>/deactivate/', views.deactivate_customer, name='deactivate-customer'),
+    path('<int:pk>/detail/', views.customer_detail, name='customer-detail'),
     path('my/inquiries/', views.my_inquiries, name='my-inquiries'),
     path('export/pdf/', views.download_customer_list_pdf, name='export-customer-pdf'),
 ]

@@ -91,3 +91,17 @@ def download_customer_list_pdf(request):
 
     doc.build(elements)
     return response
+
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def customer_detail(request, pk):
+    try:
+        customer = Customer.objects.get(pk=pk)
+    except Customer.DoesNotExist:
+        return Response({'error': 'Customer not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    from .serializers import CustomerDetailSerializer
+    serializer = CustomerDetailSerializer(customer)
+    return Response(serializer.data)
+    

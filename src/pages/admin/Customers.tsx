@@ -4,18 +4,39 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Loader2 } from "lucide-react";
+import { Search, Loader2, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface Customer {
   id: number;
   name: string;
   email: string;
+  phone: string;
   inquiries_count: number;
   status: string;
   joinDate: string;
+}
+
+interface Inquiry {
+  id: number;
+  car: number;
+  car_name: string;
+  message: string;
+  created_at: string;
+}
+
+interface CustomerDetail {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  status: string;
+  joinDate: string;
+  inquiries: Inquiry[];
 }
 
 const Customers = () => {
@@ -23,6 +44,9 @@ const Customers = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedCustomer, setSelectedCustomer] = useState<CustomerDetail | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const token = localStorage.getItem("accessToken");
 
@@ -30,9 +54,7 @@ const Customers = () => {
     setLoading(true);
     try {
       const response = await fetch("http://127.0.0.1:8000/api/customers/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (!response.ok) throw new Error("Failed to fetch customers");
       const data = await response.json();
@@ -48,18 +70,32 @@ const Customers = () => {
     fetchCustomers();
   }, []);
 
+  const handleView = async (id: number) => {
+    setDetailLoading(true);
+    setModalOpen(true);
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/customers/${id}/detail/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!response.ok) throw new Error("Failed to fetch customer details");
+      const data = await response.json();
+      setSelectedCustomer(data);
+    } catch (err: any) {
+      toast.error("Failed to load customer details");
+      setModalOpen(false);
+    } finally {
+      setDetailLoading(false);
+    }
+  };
+
   const handleActivate = async (id: number) => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/customers/${id}/activate/`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (!response.ok) throw new Error("Failed to activate customer");
-      setCustomers((prev) =>
-        prev.map((c) => (c.id === id ? { ...c, status: "active" } : c))
-      );
+      setCustomers((prev) => prev.map((c) => (c.id === id ? { ...c, status: "active" } : c)));
       toast.success("Customer activated successfully!");
     } catch (err: any) {
       toast.error(err.message || "Failed to activate customer");
@@ -70,14 +106,10 @@ const Customers = () => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/customers/${id}/deactivate/`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (!response.ok) throw new Error("Failed to deactivate customer");
-      setCustomers((prev) =>
-        prev.map((c) => (c.id === id ? { ...c, status: "inactive" } : c))
-      );
+      setCustomers((prev) => prev.map((c) => (c.id === id ? { ...c, status: "inactive" } : c)));
       toast.success("Customer deactivated.");
     } catch (err: any) {
       toast.error(err.message || "Failed to deactivate customer");
@@ -87,9 +119,7 @@ const Customers = () => {
   const handleExport = async () => {
     try {
       const response = await fetch("http://127.0.0.1:8000/api/customers/export/pdf/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (!response.ok) throw new Error("Failed to fetch PDF");
       const blob = await response.blob();
@@ -130,12 +160,9 @@ const Customers = () => {
 
       <main className="container-custom py-8">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-Ndai-primary">Customer Management</h1>
+          <h1 className="text-3xl font-bold text-ndai-space-primary">Customer Management</h1>
           <div className="mt-4 md:mt-0">
-            <Button
-              className="bg-Ndai-accent text-Ndai-primary hover:bg-Ndai-accent/90"
-              onClick={handleExport}
-            >
+            <Button className="bg-ndai-space-accent text-ndai-space-primary hover:bg-ndai-space-accent/90" onClick={handleExport}>
               Export Customer Data
             </Button>
           </div>
@@ -155,7 +182,7 @@ const Customers = () => {
 
         {loading ? (
           <div className="flex justify-center items-center h-32">
-            <Loader2 className="h-8 w-8 animate-spin text-Ndai-primary" />
+            <Loader2 className="h-8 w-8 animate-spin text-ndai-space-primary" />
           </div>
         ) : error ? (
           <p className="text-red-500">{error}</p>
@@ -194,21 +221,19 @@ const Customers = () => {
                       <TableCell>{customer.joinDate}</TableCell>
                       <TableCell>
                         <div className="flex space-x-2">
-                          <Button variant="outline" size="sm">View</Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleView(customer.id)}
+                          >
+                            View
+                          </Button>
                           {customer.status === "active" ? (
-                            <Button
-                              variant="destructive"
-                              size="sm"
-                              onClick={() => handleDeactivate(customer.id)}
-                            >
+                            <Button variant="destructive" size="sm" onClick={() => handleDeactivate(customer.id)}>
                               Deactivate
                             </Button>
                           ) : (
-                            <Button
-                              className="bg-green-600 hover:bg-green-700"
-                              size="sm"
-                              onClick={() => handleActivate(customer.id)}
-                            >
+                            <Button className="bg-green-600 hover:bg-green-700" size="sm" onClick={() => handleActivate(customer.id)}>
                               Activate
                             </Button>
                           )}
@@ -229,6 +254,75 @@ const Customers = () => {
           </Card>
         )}
       </main>
+
+      {/* Customer Detail Modal */}
+      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Customer Details</DialogTitle>
+          </DialogHeader>
+
+          {detailLoading ? (
+            <div className="flex justify-center items-center h-32">
+              <Loader2 className="h-8 w-8 animate-spin text-ndai-space-primary" />
+            </div>
+          ) : selectedCustomer ? (
+            <div className="space-y-6">
+              {/* Customer Info */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-500">Full Name</p>
+                  <p className="font-medium">{selectedCustomer.name}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Email</p>
+                  <p className="font-medium">{selectedCustomer.email}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Phone</p>
+                  <p className="font-medium">{selectedCustomer.phone || "N/A"}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Status</p>
+                  {getStatusBadge(selectedCustomer.status)}
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Join Date</p>
+                  <p className="font-medium">{selectedCustomer.joinDate}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Address</p>
+                  <p className="font-medium">{selectedCustomer.address || "N/A"}</p>
+                </div>
+              </div>
+
+              {/* Inquiries */}
+              <div>
+                <h3 className="font-semibold text-lg mb-3">
+                  Inquiries ({selectedCustomer.inquiries.length})
+                </h3>
+                {selectedCustomer.inquiries.length === 0 ? (
+                  <p className="text-gray-500">No inquiries yet.</p>
+                ) : (
+                  <div className="space-y-3 max-h-64 overflow-y-auto">
+                    {selectedCustomer.inquiries.map((inquiry) => (
+                      <div key={inquiry.id} className="border rounded-lg p-3">
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="font-medium text-sm">{inquiry.car_name}</span>
+                          <span className="text-xs text-gray-400">
+                            {new Date(inquiry.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600">{inquiry.message}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : null}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
